@@ -45,6 +45,12 @@ public class GeneratorTest
         World w = new World();
         Currency c = new Currency.Builder(w).name("Gold").build();
         
+        CurrencyFormatter cf = new CurrencyFormatter
+            .Builder(c)
+            .showHighestThousand()
+            .showDecimals()
+            .build();
+        
         Generator g = new Generator.Builder(w)
             .baseAmount(100)
             .multiplier(1.2)
@@ -59,19 +65,19 @@ public class GeneratorTest
         assertEquals(new BigInteger("" + 100), g.getGeneratedAmount());
         g.process();
         assertEquals(new BigInteger("" + 100), c.getValue());
-        System.out.println("Currency now: " + c.getAmountAsString());
+        System.out.println("Currency now: " + cf + " (" + c.getAmountAsString() + ")");
         
         g.upgrade();
         g.process();
         BigInteger amount = new BigInteger("" + 100);
         amount = amount.add(g.getGeneratedAmount());
         assertEquals(amount, c.getValue());
-        System.out.println("Currency now: " + c.getAmountAsString());
+        System.out.println("Currency now: " + cf + " (" + c.getAmountAsString() + ")");
         
         for(int i = 0; i < 100; ++i)
         {
             g.process();
-            System.out.println("Currency now: " + c.getAmountAsString(true));
+            System.out.println("Currency now: " + cf + " (" + c.getAmountAsString() + ")");
         }
     }
 }
