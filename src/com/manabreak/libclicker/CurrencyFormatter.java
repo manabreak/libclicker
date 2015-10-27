@@ -148,8 +148,8 @@ public class CurrencyFormatter
             int length = raw.length();
             if(length < 4) return raw;
             int rem = length % 3;
+            rem = rem == 0 ? 3 : rem;
             String top = raw.substring(0, rem);
-            
             
             if(m_showDecimals)
             {
@@ -163,9 +163,10 @@ public class CurrencyFormatter
         {
             if(m_groupDigits)
             {
-                for(int i = raw.length() - 1; i > 0; --i)
+                int len = raw.length() - 3;
+                for(int i = len; i > 0; --i)
                 {
-                    if(i % 3 - 1 == 0)
+                    if((len - i) % 3 == 0)
                     {
                         raw = raw.substring(0, i) + m_thousandSeparator + raw.substring(i);
                     }

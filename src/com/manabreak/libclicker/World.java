@@ -11,73 +11,39 @@ import java.util.List;
 public class World
 {
     /**
-     * Tick rate (how much should the world advance when update() is called)
-     */
-    private double m_tickRate;
-    
-    /**
      * Active generators
      */
-    private ArrayList<Generator> m_generators = new ArrayList<Generator>();
+    private final ArrayList<Generator> m_generators = new ArrayList<>();
     
     /**
-     * Global multiplier (per second) which is applied
- as the final step during each update
+     * Active automators
      */
-    private double m_globalMultiplierPerSec = 1.0;
-    
-    /**
-     * List of active automators
-     */
-    private ArrayList<Automator> m_automators = new ArrayList<Automator>();
+    private final ArrayList<Automator> m_automators = new ArrayList<>();
     
     /**
      * Currencies in use
      */
-    private ArrayList<Currency> m_currencies = new ArrayList<Currency>();
+    private final ArrayList<Currency> m_currencies = new ArrayList<>();
     
     /**
-     * Constructs a new world with a default update rate of 1/60th of a second
+     * Modifiers in use
+     */
+    private final ArrayList<Modifier> m_modifiers = new ArrayList<>();
+    
+    /**
+     * Constructs a new world. All the other components require an existing
+     * "world" to function. A world is a container for the whole system.
      */
     public World()
     {
-        m_tickRate = 1f / 60f;
-    }
-
-    /**
-     * Constructs a new world.
-     * 
-     * @param tickRate Tick rate
-     */
-    public World(double tickRate)
-    {
-        m_tickRate = tickRate;
-    }
-    
-    /**
-     * Returns the current update rate of the world.
-     * @return The update rate of the world
-     */
-    public double getTickRate()
-    {
-        return m_tickRate;
-    }
-
-    /**
-     * Sets the update rate of the world.
-     * 
-     * @param tickRate Tick rate, in seconds
-     */
-    public void setTickRate(double tickRate)
-    {
-        m_tickRate = tickRate;
+        
     }
 
     /**
      * Adds a new generator to this world
      * @param generator Generator to add
      */
-    public void addGenerator(Generator generator)
+    void addGenerator(Generator generator)
     {
         if(generator != null && !m_generators.contains(generator))
         {
@@ -90,7 +56,7 @@ public class World
      * Returns the number of generators in this world
      * @return The number of generators in this world
      */
-    public Object getGeneratorCount()
+    public int getGeneratorCount()
     {
         return m_generators.size();
     }
@@ -99,7 +65,7 @@ public class World
      * Removes a generator
      * @param generator Generator to remove
      */
-    public void removeGenerator(Generator generator)
+    void removeGenerator(Generator generator)
     {
         if(generator != null && m_generators.contains(generator))
         {
@@ -111,12 +77,12 @@ public class World
     /**
      * Removes all the generators from this world
      */
-    public void removeAllGenerators()
+    void removeAllGenerators()
     {
         m_generators.clear();
     }
     
-    public void addCurrency(Currency c)
+    void addCurrency(Currency c)
     {
         if(c != null && !m_currencies.contains(c))
         {
@@ -124,7 +90,7 @@ public class World
         }
     }
     
-    public void removeCurrency(Currency c)
+    void removeCurrency(Currency c)
     {
         if(c != null)
         {
@@ -132,27 +98,19 @@ public class World
         }
     }
     
-    public Currency getCurrency(int index)
+    Currency getCurrency(int index)
     {
         return m_currencies.get(index);
     }
     
-    public List<Currency> getCurrencies()
+    List<Currency> getCurrencies()
     {
         return m_currencies;
     }
     
-    public void removeAllCurrencies()
+    void removeAllCurrencies()
     {
         m_currencies.clear();
-    }
-    
-    /**
-     * Advances the world state by the default update rate.
-     */
-    public void update()
-    {
-        update(m_tickRate);
     }
     
     /**
@@ -163,17 +121,30 @@ public class World
      */
     public void update(double seconds)
     {
+        for(Modifier m : m_modifiers)
+        {
+            m.update(seconds);
+        }
+        
         for(Automator a : m_automators)
         {
             a.update(seconds);
         }
     }
 
-    public void addAutomator(Automator automator)
+    void addAutomator(Automator automator)
     {
         if(automator != null && !m_automators.contains(automator))
         {
             m_automators.add(automator);
+        }
+    }
+    
+    void addModifier(Modifier modifier)
+    {
+        if(modifier != null && !m_modifiers.contains(modifier))
+        {
+            m_modifiers.add(modifier);
         }
     }
 }

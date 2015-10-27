@@ -65,19 +65,49 @@ public class GeneratorTest
         assertEquals(new BigInteger("" + 100), g.getGeneratedAmount());
         g.process();
         assertEquals(new BigInteger("" + 100), c.getValue());
-        System.out.println("Currency now: " + cf + " (" + c.getAmountAsString() + ")");
         
+        BigInteger amount = g.getGeneratedAmount();
         g.upgrade();
         g.process();
-        BigInteger amount = new BigInteger("" + 100);
         amount = amount.add(g.getGeneratedAmount());
+        // assertEquals(amount, c.getValue());
         assertEquals(amount, c.getValue());
-        System.out.println("Currency now: " + cf + " (" + c.getAmountAsString() + ")");
+    }
+    
+    @Test
+    public void testRemainderUsage() throws Exception
+    {
+        World w = new World();
         
-        for(int i = 0; i < 100; ++i)
-        {
-            g.process();
-            System.out.println("Currency now: " + cf + " (" + c.getAmountAsString() + ")");
-        }
+        Currency c = new Currency.Builder(w)
+            .name("Gold")
+            .build();
+        
+        Generator g = new Generator.Builder(w)
+            .baseAmount(1)
+            .multiplier(1.2)
+            .useRemainder()
+            .generate(c)
+            .build();
+        
+        // Set to level 2
+        g.setItemLevel(2);
+        
+        assertEquals(BigInteger.ZERO, c.getValue());
+        
+        g.process();
+        assertEquals(new BigInteger("1"), c.getValue());
+        
+        g.process();
+        assertEquals(new BigInteger("2"), c.getValue());
+        
+        g.process();
+        assertEquals(new BigInteger("3"), c.getValue());
+        
+        g.process();
+        assertEquals(new BigInteger("4"), c.getValue());
+        
+        g.process();
+        assertEquals(new BigInteger("6"), c.getValue());
     }
 }

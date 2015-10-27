@@ -45,20 +45,6 @@ public class WorldTest
     }
 
     /**
-     * Test of getTickRate method, of class World.
-     */
-    @Test
-    public void testTickRate()
-    {
-        System.out.println("getTickRate");
-        World world = new World();
-        
-        float expResult = 1f / 300f;
-        world.setTickRate(expResult);
-        assertEquals(expResult, world.getTickRate(), 0.1f);
-    }
-
-    /**
      * Test of addGenerator method, of class World.
      */
     @Test

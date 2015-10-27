@@ -2,6 +2,7 @@ package com.manabreak.libclicker;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Random;
 
 /**
  *
@@ -46,14 +47,34 @@ public class Generator extends Item
     private double m_amountMultiplier;
     
     /**
-     * Level of this generator
+     * Probability for this generator to "work"
      */
-    private long m_level;
+    private double m_probability;
     
     /**
-     * Max. level allowed for this generator
+     * Should this generator use probability?
      */
-    private long m_maxLevel;
+    private boolean m_useProbability;
+    
+    /**
+     * RNG for probability
+     */
+    private Random m_random;
+    
+    /**
+     * Should we take remainders into consideration?
+     */
+    private boolean m_useRemainder;
+    
+    /**
+     * Remainder of the last processing cycle
+     */
+    private double m_remainder;
+    
+    /**
+     * Cooldown time between processing cycles.
+     */
+    private double m_cooldown;
     
     /**
      * Builder class for creating new generators
@@ -67,7 +88,12 @@ public class Generator extends Item
         private BigInteger m_baseAmount = BigInteger.ONE;
         private double m_amountMultiplier = 1.1;
         private long m_maxLevel = Long.MAX_VALUE;
-        
+        private BigInteger m_basePrice = BigInteger.ONE;
+        private double m_priceMultiplier = 1.1;
+        private double m_probability = 1.0;
+        private boolean m_probabilitySet = false;
+        private boolean m_useRemainder = true;
+        private double m_cooldown = 0.0;
         /**
          * Creates a new generator builder
          * @param world World to build the generator into
@@ -75,6 +101,33 @@ public class Generator extends Item
         public Builder(World world)
         {
             m_world = world;
+        }
+        
+        public Builder cooldown(double cooldown)
+        {
+            m_cooldown = cooldown;
+            return this;
+        }
+        
+        /**
+         * Store remainder of resources and add an extra
+         * when the remainder "overflows"
+         * @return This builder for chaining
+         */
+        public Builder useRemainder()
+        {
+            m_useRemainder = true;
+            return this;
+        }
+        
+        /**
+         * Discard remainder of resources when generating.
+         * @return This builder for chaining
+         */
+        public Builder discardRemainder()
+        {
+            m_useRemainder = false;
+            return this;
         }
         
         /**
@@ -178,6 +231,43 @@ public class Generator extends Item
             return this;
         }
         
+        public Builder price(BigInteger price)
+        {
+            m_basePrice = price;
+            return this;
+        }
+        
+        public Builder price(long price)
+        {
+            m_basePrice = new BigInteger("" + price);
+            return this;
+        }
+        
+        public Builder price(int price)
+        {
+            m_basePrice = new BigInteger("" + price);
+            return this;
+        }
+        
+        public Builder priceMultiplier(double multiplier)
+        {
+            m_priceMultiplier = multiplier;
+            return this;
+        }
+        
+        /**
+         * Set a probability for this generator to "work" when it's processed
+         * @param probability Probability percentage (between 0.0 and 1.0)
+         * @return This builder for chaining
+         */
+        public Builder probability(double probability)
+        {
+            if(probability < 0 || probability > 1.0) throw new IllegalArgumentException("Probability should be between 0.0 and 1.0");
+            m_probability = probability;
+            m_probabilitySet = true;
+            return this;
+        }
+        
         /**
          * Constructs the generator based on the given parameters
          * @return The generator
@@ -189,7 +279,15 @@ public class Generator extends Item
             g.m_currency = m_currency;
             g.m_amountMultiplier = m_amountMultiplier;
             g.m_baseAmount = m_baseAmount;
-            g.m_maxLevel = m_maxLevel;
+            g.m_maxItemLevel = m_maxLevel;
+            g.m_basePrice = m_basePrice;
+            g.m_priceMultiplier = m_priceMultiplier;
+            g.m_probability = m_probability;
+            g.m_useProbability = m_probabilitySet;
+            g.m_random = new Random();
+            g.m_random.setSeed(g.hashCode());
+            g.m_useRemainder = m_useRemainder;
+            g.m_cooldown = m_cooldown;
             return g;
         }
     }
@@ -230,14 +328,14 @@ public class Generator extends Item
     /**
      * Removes this generator from the world
      */
-    public void remove()
+    void remove()
     {
         m_world.removeGenerator(this);
         m_world = null;
     }
     
     /**
-     * 
+     * Retrieves the world this generator belongs to
      * @return 
      */
     World getWorld()
@@ -250,9 +348,9 @@ public class Generator extends Item
      */
     public void upgrade()
     {
-        if(m_level < m_maxLevel)
+        if(m_itemLevel < m_maxItemLevel)
         {
-            m_level++;
+            m_itemLevel++;
         }
     }
     
@@ -261,9 +359,9 @@ public class Generator extends Item
      */
     public void downgrade()
     {
-        if(m_level > 0)
+        if(m_itemLevel > 0)
         {
-            m_level--;
+            m_itemLevel--;
         }
     }
     
@@ -274,39 +372,36 @@ public class Generator extends Item
      */
     public BigInteger getGeneratedAmount()
     {
-        if(m_level == 0) return BigInteger.ZERO;
+        if(m_itemLevel == 0) return BigInteger.ZERO;
         
         BigDecimal tmp = new BigDecimal(m_baseAmount);
-        tmp = tmp.multiply(new BigDecimal(Math.pow(m_amountMultiplier, m_level - 1)));
+        tmp = tmp.multiply(new BigDecimal(Math.pow(m_amountMultiplier, m_itemLevel - 1)));
+        if(m_useRemainder)
+        {
+            double tmpRem = tmp.remainder(BigDecimal.ONE).doubleValue();
+            m_remainder += tmpRem;
+            if(m_remainder >= 0.999)
+            {
+                m_remainder -= 1.0;
+                tmp = tmp.add(new BigDecimal(1));
+            }
+        }
         return tmp.toBigInteger();
     }
     
     /**
-     * Retrieves the current level of this generator.
-     * @return Level of this generator
+     * Determines if this generator should generate anything based on its
+     * properties such as item level and probability.
+     * 
+     * @return True if should work, false otherwise
      */
-    public long getLevel()
+    private boolean isWorking()
     {
-        return m_level;
-    }
-    
-    /**
-     * Sets the level of this generator. If the given level parameter
-     * is higher than the maximum allowed level for this generator,
-     * the level of the generator is set to the maximum allowed level.
-     * @param level Level to set
-     */
-    public void setLevel(long level)
-    {
-        m_level = Math.max(level, m_maxLevel);
-    }
-    
-    /**
-     * Maximizes the level of this generator.
-     */
-    public void maximize()
-    {
-        m_level = m_maxLevel;
+        if(m_itemLevel > 0)
+        {
+            if(!m_useProbability || m_random.nextDouble() < m_probability) return true;
+        }
+        return false;
     }
     
     /**
@@ -315,15 +410,18 @@ public class Generator extends Item
      */
     public void process()
     {
-        if(m_level > 0)
+        if(isWorking())
         {
-            m_currency.add(getGeneratedAmount());
+            m_currency.add(getGeneratedAmount());   
+            m_timesProcessed++;
+            if(m_callback != null) m_callback.onProcessed();
         }
-        
-        m_timesProcessed++;
-        if(m_callback != null) m_callback.onProcessed();
     }
     
+    /**
+     * Retrieves the number of times this generator has done its processing
+     * @return Number of times processed
+     */
     public long getTimesProcessed()
     {
         return m_timesProcessed;

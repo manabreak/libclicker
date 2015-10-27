@@ -6,46 +6,55 @@
 package com.manabreak.libclicker;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 
 /**
  * Base class for all the purchasable "items".
  * 
  * @author Harri Pellikka
  */
-class Item
+public abstract class Item
 {
     /**
      * The base price of the item (i.e. the price of the first level of this item)
      */
-    private BigInteger m_basePrice = BigInteger.ONE;
+    protected BigInteger m_basePrice = BigInteger.ONE;
     
     /**
      * Name of this item
      */
-    private String m_name = "NONAME";
+    protected String m_name = "Nameless Item";
     
     /**
      * Description text for this item
      */
-    private String m_description = "No description.";
+    protected String m_description = "No description.";
     
     /**
      * Current level of this item
      */
-    private long m_itemLevel = 0;
+    protected long m_itemLevel = 0;
     
     /**
      * Max. item level
      */
-    private long m_maxItemLevel = Long.MAX_VALUE;
+    protected long m_maxItemLevel = Long.MAX_VALUE;
     
     /**
      * Price multiplier per level. This is used in the price formula
      * like this: price = (base price) * (price multiplier) ^ (item level)
      */
-    private double m_priceMultiplier = 1.145;
+    protected double m_priceMultiplier = 1.145;
     
+    /**
+     * World this item belongs to
+     */
     private final World m_world;
+    
+    /**
+     * Modifiers applied to this item
+     */
+    final ArrayList<Modifier> m_modifiers = new ArrayList<>();
     
     /**
      * Constructs a new item
@@ -114,6 +123,16 @@ class Item
         m_basePrice = basePrice;
     }
     
+    public void setBasePrice(long basePrice)
+    {
+        m_basePrice = new BigInteger("" + basePrice);
+    }
+    
+    public void setBasePrice(int basePrice)
+    {
+        m_basePrice = new BigInteger("" + basePrice);
+    }
+    
     /**
      * Retrieves the price multiplier
      * @return Price multiplier
@@ -153,5 +172,26 @@ class Item
         if(lvl < 0) throw new RuntimeException("Item level cannot be negative");
         if(lvl > m_maxItemLevel) throw new RuntimeException("Item level cannot be greater than max. item level");
         m_itemLevel = lvl;
+    }
+    
+    public void upgrade()
+    {
+        if(m_itemLevel < m_maxItemLevel)
+        {
+            m_itemLevel++;
+        }
+    }
+    
+    public void downgrade()
+    {
+        if(m_itemLevel > 0)
+        {
+            m_itemLevel--;
+        }
+    }
+    
+    public void maximize()
+    {
+        m_itemLevel = m_maxItemLevel;
     }
 }
