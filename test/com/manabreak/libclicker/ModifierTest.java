@@ -146,7 +146,7 @@ public class ModifierTest
         
         Modifier m = new Modifier.Builder()
             .modify(w)
-            .disableGenerators()
+            .disableActivators()
             .build();
         
         m.enable();
