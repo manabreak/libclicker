@@ -162,6 +162,38 @@ public class ModifierTest
         assertEquals(new BigInteger("20"), c.getValue());
     }
     
+    @Test
+    public void testSpeedGenerators()
+    {
+        World w = new World();
+        Currency c = new Currency.Builder(w)
+            .name("Gold")
+            .build();
+        
+        Generator g = new Generator.Builder(w)
+            .baseAmount(1)
+            .generate(c)
+            .build();
+        g.upgrade();
+        
+        g.process();
+        
+        assertEquals(BigInteger.ONE, c.getValue());
+        
+        Modifier m = new Modifier.Builder()
+            .modify(g)
+            .multiplier(2.0)
+            .build();
+        m.enable();
+        
+        g.process();
+        assertEquals(new BigInteger("3"), c.getValue());
+        
+        m.disable();
+        g.process();
+        assertEquals(new BigInteger("4"), c.getValue());
+    }
+    
     /**
      * Test of isEnabled method, of class Modifier.
      */

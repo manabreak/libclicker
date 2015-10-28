@@ -1,7 +1,9 @@
 package com.manabreak.libclicker;
 
+import com.manabreak.libclicker.Modifier.GeneratorModifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -75,6 +77,11 @@ public class Generator extends Item
      * Cooldown time between processing cycles.
      */
     private double m_cooldown;
+    
+    /**
+     * List of active modifiers attached to this generator
+     */
+    private ArrayList<GeneratorModifier> m_modifiers = new ArrayList<>();
     
     /**
      * Builder class for creating new generators
@@ -386,7 +393,26 @@ public class Generator extends Item
                 tmp = tmp.add(new BigDecimal(1));
             }
         }
+        
+        tmp = processModifiers(tmp);
+        
         return tmp.toBigInteger();
+    }
+    
+    private BigDecimal processModifiers(BigDecimal val)
+    {
+        if(m_modifiers.size() == 0) return val;
+        
+        for(GeneratorModifier m : m_modifiers)
+        {
+            double d = m.getMultiplier();
+            if(d != 1.0)
+            {
+                val = val.multiply(new BigDecimal(d));
+            }
+        }
+        
+        return val;
     }
     
     /**
@@ -425,5 +451,21 @@ public class Generator extends Item
     public long getTimesProcessed()
     {
         return m_timesProcessed;
+    }
+    
+    void attachModifier(GeneratorModifier modifier)
+    {
+        if(modifier != null && !m_modifiers.contains(modifier))
+        {
+            m_modifiers.add(modifier);
+        }
+    }
+    
+    void detachModifier(GeneratorModifier modifier)
+    {
+        if(modifier != null)
+        {
+            m_modifiers.remove(modifier);
+        }
     }
 }
