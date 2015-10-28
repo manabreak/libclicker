@@ -31,6 +31,16 @@ public class World
     private final ArrayList<Modifier> m_modifiers = new ArrayList<>();
     
     /**
+     * Speed multiplier - used to multiply the time the world advances
+     */
+    private double m_speedMultiplier = 1.0;
+    
+    /**
+     * Should automators be updated?
+     */
+    private boolean m_updateAutomators = true;
+    
+    /**
      * Constructs a new world. All the other components require an existing
      * "world" to function. A world is a container for the whole system.
      */
@@ -126,9 +136,14 @@ public class World
             m.update(seconds);
         }
         
-        for(Automator a : m_automators)
+        seconds *= m_speedMultiplier;
+        
+        if(m_updateAutomators)
         {
-            a.update(seconds);
+            for(Automator a : m_automators)
+            {
+                a.update(seconds);
+            }
         }
     }
 
@@ -146,5 +161,25 @@ public class World
         {
             m_modifiers.add(modifier);
         }
+    }
+
+    double getSpeedMultiplier()
+    {
+        return m_speedMultiplier;
+    }
+
+    void setSpeedMultiplier(double multiplier)
+    {
+        m_speedMultiplier = multiplier;
+    }
+
+    void disableAutomators()
+    {
+        m_updateAutomators = false;
+    }
+    
+    void enableAutomators()
+    {
+        m_updateAutomators = true;
     }
 }
