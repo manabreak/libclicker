@@ -83,6 +83,69 @@ Automator goldDigger = new Automator.Builder(world)
 world.update(30.0);
 ```
 
+### Modifiers
+
+Yet another common thing found in procedural games is the use of upgrades, bonuses
+or other modifiers that change the outcome of the system in some way. Modifiers
+are supported in libclicker and can be applied to any other elements, modifying
+just about any of their properties (at least in the near future).
+
+The usage of modifiers follows the same pattern:
+
+```java
+// World to modify
+World w = new World();
+
+// Modify the world by creating a "double speed bonus" modifiers
+Modifier m = new Modifier.Builder()
+      .modify(w)
+      .speedBy(2.0)
+      .build();
+      
+// By enabling the modifier, the speed bonus turns on
+m.enable();
+
+// World is now actually advanced by 20 seconds instead of 10
+w.update(10.0);
+
+// Let's disable the modifier ("back to normal")
+m.disable();
+
+// Back to normal 10-second updates
+w.update(10.0);
+```
+
+Note that multiple modifiers can be stacked:
+
+```java
+// Double speed bonus
+Modifier m1 = new Modifier.Builder()
+      .modify(w)
+      .speedBy(2.0)
+      .build();
+
+// Triple speed bonus
+Modifier m2 = new Modifier.Builder()
+      .modify(w)
+      .speedBy(3.0)
+      .build();
+      
+// Enable both bonuses, result is 6X speed bonus
+m1.enable();
+m2.enable();
+
+// World advances 6 seconds now, instead of 1
+w.update(1.0);
+
+// You can disable a single modifier and leave the other on
+m1.disable();
+
+// Only the triple bonus is now enabled --> 3 seconds advancement
+w.update(1.0);
+```
+
+The modifier support is still pretty small, but more modifiers and
+modifiable properties will be available in the near future.
 ### Currency formatters
 
 You can query the amount of currency by calling its `getAmountAsString()` method, but
