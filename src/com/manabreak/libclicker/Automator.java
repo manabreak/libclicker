@@ -33,6 +33,7 @@ public class Automator extends Item
     private Generator mGenerator;
     private double mTickRate = 1.0;
     private double mTickTimer = 0.0;
+    private boolean mEnabled;
     
     public static class Builder
     {
@@ -40,6 +41,7 @@ public class Automator extends Item
         private Generator mGenerator;
         private double mTickRate = 1.0;
         private String mName = "Nameless automator";
+        private boolean mEnabled = true;
         
         public Builder(World world)
         {
@@ -71,6 +73,7 @@ public class Automator extends Item
             Automator a = new Automator(mWorld, mName);
             a.mGenerator = mGenerator;
             a.mTickRate = mTickRate;
+            a.mEnabled = mEnabled;
             mWorld.addAutomator(a);
             return a;
         }
@@ -81,8 +84,20 @@ public class Automator extends Item
         super(world, name);
     }
     
+    public void enable()
+    {
+        mEnabled = true;
+    }
+    
+    public void disable()
+    {
+        mEnabled = false;
+    }
+    
     public void update(double delta)
     {
+        if(!mEnabled) return;
+        
         mTickTimer += delta;
         while(mTickTimer >= mTickRate)
         {
