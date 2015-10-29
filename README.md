@@ -146,6 +146,37 @@ w.update(1.0);
 
 The modifier support is still pretty small, but more modifiers and
 modifiable properties will be available in the near future.
+
+### Purchasing items
+
+Every item starts from level 0, meaning they don't "do" anything.
+You can query the price of an item by calling its `getPrice()` method:
+
+```java
+Item item = ...;
+
+// Query the price of the NEXT level of the item
+BigInteger price = item.getPrice();
+```
+
+To upgrade an item with currency, call the item's `buyWith()` method:
+
+```java
+Currency gold = ...;
+Item item = ...;
+
+PurchaseResult result = item.buyWith(gold);
+```
+
+The returned `PurchaseResult` is an enum denoting the result. The
+possible out outcomes are:
+
+- `PurchaseResult.OK` when the item was successfully purchased or upgraded and the money was deducted
+
+- `PurchaseResult.INSUFFICIENT_FUNDS` when there was not enough money to buy the item
+
+- `PurchaseResult.MAX_LEVEL_REACHED` when the item has already reached its max level and cannot be upgraded any further
+
 ### Currency formatters
 
 You can query the amount of currency by calling its `getAmountAsString()` method, but
