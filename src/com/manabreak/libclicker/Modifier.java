@@ -11,54 +11,54 @@ package com.manabreak.libclicker;
  */
 public abstract class Modifier
 {
-    private boolean m_enabled = false;
+    private boolean mEnabled = false;
     
     /**
      * Modifier for worlds
      */
     static class WorldModifier extends Modifier
     {
-        private World m_world;
-        private double m_speedMultiplier;
-        private boolean m_disableActivators;
+        private World mWorld;
+        private double mSpeedMultiplier;
+        private boolean mDisableActivators;
         
-        private double m_speedMultiplierBefore;
-        private double m_speedMultiplierAfter;
+        private double mSpeedMultiplierBefore;
+        private double mSpeedMultiplierAfter;
         
         WorldModifier(World world)
         {
-            m_world = world;
+            mWorld = world;
         }
 
         @Override
         protected void onEnable()
         {
-            if(m_speedMultiplier != 1.0)
+            if(mSpeedMultiplier != 1.0)
             {
-                m_speedMultiplierBefore = m_world.getSpeedMultiplier();
-                m_speedMultiplierAfter = m_speedMultiplier * m_speedMultiplierBefore;
-                m_world.setSpeedMultiplier(m_speedMultiplierAfter);
+                mSpeedMultiplierBefore = mWorld.getSpeedMultiplier();
+                mSpeedMultiplierAfter = mSpeedMultiplier * mSpeedMultiplierBefore;
+                mWorld.setSpeedMultiplier(mSpeedMultiplierAfter);
             }
             
-            if(m_disableActivators)
+            if(mDisableActivators)
             {
-                m_world.disableAutomators();
+                mWorld.disableAutomators();
             }
         }
 
         @Override
         protected void onDisable()
         {
-            if(m_speedMultiplier != 1.0)
+            if(mSpeedMultiplier != 1.0)
             {
-                double d = m_world.getSpeedMultiplier();
-                d /= m_speedMultiplier;
-                m_world.setSpeedMultiplier(d);
+                double d = mWorld.getSpeedMultiplier();
+                d /= mSpeedMultiplier;
+                mWorld.setSpeedMultiplier(d);
             }
 
-            if(m_disableActivators)
+            if(mDisableActivators)
             {
-                m_world.enableAutomators();
+                mWorld.enableAutomators();
             }
         }
     }
@@ -68,29 +68,29 @@ public abstract class Modifier
      */
     static class GeneratorModifier extends Modifier
     {
-        private final Generator m_generator;
-        private double m_multiplier = 1.0;
+        private final Generator mGenerator;
+        private double mMultiplier = 1.0;
         
         GeneratorModifier(Generator generator)
         {
-            m_generator = generator;
+            mGenerator = generator;
         }
 
         @Override
         protected void onEnable()
         {
-            m_generator.attachModifier(this);
+            mGenerator.attachModifier(this);
         }
 
         @Override
         protected void onDisable()
         {
-            m_generator.detachModifier(this);
+            mGenerator.detachModifier(this);
         }
         
         double getMultiplier()
         {
-            return m_multiplier;
+            return mMultiplier;
         }
     }
     
@@ -106,13 +106,13 @@ public abstract class Modifier
          */
         public static class WorldTarget
         {
-            World m_world;
-            private double m_speedMultiplier = 1.0;
-            private boolean m_disableActivators = false;
+            World mWorld;
+            private double mSpeedMultiplier = 1.0;
+            private boolean mDisableActivators = false;
             
             WorldTarget(World w)
             {
-                m_world = w;
+                mWorld = w;
             }
             
             /**
@@ -122,7 +122,7 @@ public abstract class Modifier
              */
             public WorldTarget speedBy(double multiplier)
             {
-                m_speedMultiplier = multiplier;
+                mSpeedMultiplier = multiplier;
                 return this;
             }
             
@@ -132,7 +132,7 @@ public abstract class Modifier
              */
             public WorldTarget disableActivators()
             {
-                m_disableActivators = true;
+                mDisableActivators = true;
                 return this;
             }
             
@@ -142,9 +142,9 @@ public abstract class Modifier
              */
             public Modifier build()
             {
-                WorldModifier m = new WorldModifier(m_world);
-                m.m_speedMultiplier = m_speedMultiplier;
-                m.m_disableActivators = m_disableActivators;
+                WorldModifier m = new WorldModifier(mWorld);
+                m.mSpeedMultiplier = mSpeedMultiplier;
+                m.mDisableActivators = mDisableActivators;
                 return m;
             }
         }
@@ -156,12 +156,12 @@ public abstract class Modifier
          */
         public static class GeneratorTarget
         {
-            private Generator m_generator;
-            private double m_multiplier = 1.0;
+            private Generator mGenerator;
+            private double mMultiplier = 1.0;
             
             GeneratorTarget(Generator gen)
             {
-                m_generator = gen;
+                mGenerator = gen;
             }
             
             /**
@@ -172,7 +172,7 @@ public abstract class Modifier
              */
             public GeneratorTarget multiplier(double multiplier)
             {
-                m_multiplier = multiplier;
+                mMultiplier = multiplier;
                 return this;
             }
             
@@ -182,8 +182,8 @@ public abstract class Modifier
              */
             public Modifier build()
             {
-                GeneratorModifier m = new GeneratorModifier(m_generator);
-                m.m_multiplier = m_multiplier;
+                GeneratorModifier m = new GeneratorModifier(mGenerator);
+                m.mMultiplier = mMultiplier;
                 return m;
             }
         }
@@ -230,9 +230,9 @@ public abstract class Modifier
      */
     public void enable()
     {
-        if(!m_enabled)
+        if(!mEnabled)
         {
-            m_enabled = true;
+            mEnabled = true;
             onEnable();
         }
     }
@@ -242,10 +242,10 @@ public abstract class Modifier
      */
     public void disable()
     {
-        if(m_enabled)
+        if(mEnabled)
         { 
             onDisable();
-            m_enabled = false;
+            mEnabled = false;
         }
     }
     
@@ -255,6 +255,6 @@ public abstract class Modifier
      */
     public boolean isEnabled()
     {
-        return m_enabled;
+        return mEnabled;
     }
 }

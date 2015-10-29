@@ -13,32 +13,32 @@ public class World
     /**
      * Active generators
      */
-    private final ArrayList<Generator> m_generators = new ArrayList<>();
+    private final ArrayList<Generator> mGenerators = new ArrayList<>();
     
     /**
      * Active automators
      */
-    private final ArrayList<Automator> m_automators = new ArrayList<>();
+    private final ArrayList<Automator> mAutomators = new ArrayList<>();
     
     /**
      * Currencies in use
      */
-    private final ArrayList<Currency> m_currencies = new ArrayList<>();
+    private final ArrayList<Currency> mCurrencies = new ArrayList<>();
     
     /**
      * Modifiers in use
      */
-    private final ArrayList<Modifier> m_modifiers = new ArrayList<>();
+    private final ArrayList<Modifier> mModifiers = new ArrayList<>();
     
     /**
      * Speed multiplier - used to multiply the time the world advances
      */
-    private double m_speedMultiplier = 1.0;
+    private double mSpeedMultiplier = 1.0;
     
     /**
      * Should automators be updated?
      */
-    private boolean m_updateAutomators = true;
+    private boolean mUpdateAutomators = true;
     
     /**
      * Constructs a new world. All the other components require an existing
@@ -55,9 +55,9 @@ public class World
      */
     void addGenerator(Generator generator)
     {
-        if(generator != null && !m_generators.contains(generator))
+        if(generator != null && !mGenerators.contains(generator))
         {
-            m_generators.add(generator);
+            mGenerators.add(generator);
             generator.onAdd(this);
         }
     }
@@ -68,7 +68,7 @@ public class World
      */
     public int getGeneratorCount()
     {
-        return m_generators.size();
+        return mGenerators.size();
     }
 
     /**
@@ -77,10 +77,10 @@ public class World
      */
     void removeGenerator(Generator generator)
     {
-        if(generator != null && m_generators.contains(generator))
+        if(generator != null && mGenerators.contains(generator))
         {
             generator.onRemove(this);
-            m_generators.remove(generator);
+            mGenerators.remove(generator);
         }
     }
     
@@ -89,14 +89,14 @@ public class World
      */
     void removeAllGenerators()
     {
-        m_generators.clear();
+        mGenerators.clear();
     }
     
     void addCurrency(Currency c)
     {
-        if(c != null && !m_currencies.contains(c))
+        if(c != null && !mCurrencies.contains(c))
         {
-            m_currencies.add(c);
+            mCurrencies.add(c);
         }
     }
     
@@ -104,23 +104,23 @@ public class World
     {
         if(c != null)
         {
-            m_currencies.remove(c);
+            mCurrencies.remove(c);
         }
     }
     
     Currency getCurrency(int index)
     {
-        return m_currencies.get(index);
+        return mCurrencies.get(index);
     }
     
     List<Currency> getCurrencies()
     {
-        return m_currencies;
+        return mCurrencies;
     }
     
     void removeAllCurrencies()
     {
-        m_currencies.clear();
+        mCurrencies.clear();
     }
     
     /**
@@ -131,11 +131,11 @@ public class World
      */
     public void update(double seconds)
     {
-        seconds *= m_speedMultiplier;
+        seconds *= mSpeedMultiplier;
         
-        if(m_updateAutomators)
+        if(mUpdateAutomators)
         {
-            for(Automator a : m_automators)
+            for(Automator a : mAutomators)
             {
                 a.update(seconds);
             }
@@ -144,37 +144,37 @@ public class World
 
     void addAutomator(Automator automator)
     {
-        if(automator != null && !m_automators.contains(automator))
+        if(automator != null && !mAutomators.contains(automator))
         {
-            m_automators.add(automator);
+            mAutomators.add(automator);
         }
     }
     
     void addModifier(Modifier modifier)
     {
-        if(modifier != null && !m_modifiers.contains(modifier))
+        if(modifier != null && !mModifiers.contains(modifier))
         {
-            m_modifiers.add(modifier);
+            mModifiers.add(modifier);
         }
     }
 
     double getSpeedMultiplier()
     {
-        return m_speedMultiplier;
+        return mSpeedMultiplier;
     }
 
     void setSpeedMultiplier(double multiplier)
     {
-        m_speedMultiplier = multiplier;
+        mSpeedMultiplier = multiplier;
     }
 
     void disableAutomators()
     {
-        m_updateAutomators = false;
+        mUpdateAutomators = false;
     }
     
     void enableAutomators()
     {
-        m_updateAutomators = true;
+        mUpdateAutomators = true;
     }
 }

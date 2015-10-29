@@ -1,55 +1,54 @@
-
-
 package com.manabreak.libclicker;
 
 /**
+ * Automator class for automating generators.
  *
- * @author Harri
+ * @author Harri Pellikka
  */
 public class Automator extends Item
 {
-    private Generator m_generator;
-    private double m_tickRate = 1.0;
-    private double m_tickTimer = 0.0;
+    private Generator mGenerator;
+    private double mTickRate = 1.0;
+    private double mTickTimer = 0.0;
     
     public static class Builder
     {
-        private final World m_world;
-        private Generator m_generator;
-        private double m_tickRate = 1.0;
-        private String m_name = "Nameless automator";
+        private final World mWorld;
+        private Generator mGenerator;
+        private double mTickRate = 1.0;
+        private String mName = "Nameless automator";
         
         public Builder(World world)
         {
-            m_world = world;
+            mWorld = world;
         }
         
         public Builder automate(Generator generator)
         {
-            m_generator = generator;
+            mGenerator = generator;
             return this;
         }
         
         public Builder name(String name)
         {
-            m_name = name;
+            mName = name;
             return this;
         }
         
         public Builder every(double seconds)
         {
-            m_tickRate = seconds;
+            mTickRate = seconds;
             return this;
         }
         
         public Automator build()
         {
-            if(m_generator == null) throw new IllegalStateException("Generator cannot be null");
+            if(mGenerator == null) throw new IllegalStateException("Generator cannot be null");
             
-            Automator a = new Automator(m_world, m_name);
-            a.m_generator = m_generator;
-            a.m_tickRate = m_tickRate;
-            m_world.addAutomator(a);
+            Automator a = new Automator(mWorld, mName);
+            a.mGenerator = mGenerator;
+            a.mTickRate = mTickRate;
+            mWorld.addAutomator(a);
             return a;
         }
     }
@@ -61,33 +60,33 @@ public class Automator extends Item
     
     public void update(double delta)
     {
-        m_tickTimer += delta;
-        while(m_tickTimer >= m_tickRate)
+        mTickTimer += delta;
+        while(mTickTimer >= mTickRate)
         {
-            m_tickTimer -= m_tickRate;
-            m_generator.process();
+            mTickTimer -= mTickRate;
+            mGenerator.process();
         }
     }
     
     public double getTickRate()
     {
-        return m_tickRate;
+        return mTickRate;
     }
     
     public void setTickRate(double tickRate)
     {
-        m_tickRate = tickRate;
-        if(m_tickRate < 0.0) m_tickRate = 0.0;
+        mTickRate = tickRate;
+        if(mTickRate < 0.0) mTickRate = 0.0;
     }
     
     /**
      * Retrieves the percentage of the tick. Useful
-     * for when creating progress bars for generators.
+     * when creating progress bars for generators.
      * 
      * @return Percentage of tick completion
      */
     public double getTimerPercentage()
     {
-        return m_tickRate != 0.0 ? m_tickTimer / m_tickRate : 1.0;
+        return mTickRate != 0.0 ? mTickTimer / mTickRate : 1.0;
     }
 }

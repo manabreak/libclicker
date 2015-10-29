@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.manabreak.libclicker;
 
 import java.math.BigInteger;
@@ -18,50 +13,50 @@ public abstract class Item
     /**
      * The base price of the item (i.e. the price of the first level of this item)
      */
-    protected BigInteger m_basePrice = BigInteger.ONE;
+    protected BigInteger mBasePrice = BigInteger.ONE;
     
     /**
      * Name of this item
      */
-    protected String m_name = "Nameless Item";
+    protected String mName = "Nameless Item";
     
     /**
      * Description text for this item
      */
-    protected String m_description = "No description.";
+    protected String mDescription = "No description.";
     
     /**
      * Current level of this item
      */
-    protected long m_itemLevel = 0;
+    protected long mItemLevel = 0;
     
     /**
      * Max. item level
      */
-    protected long m_maxItemLevel = Long.MAX_VALUE;
+    protected long mMaxItemLevel = Long.MAX_VALUE;
     
     /**
      * Price multiplier per level. This is used in the price formula
      * like this: price = (base price) * (price multiplier) ^ (item level)
      */
-    protected double m_priceMultiplier = 1.145;
+    protected double mPriceMultiplier = 1.145;
     
     /**
      * World this item belongs to
      */
-    private final World m_world;
+    private final World mWorld;
     
     /**
      * Modifiers applied to this item
      */
-    final ArrayList<Modifier> m_modifiers = new ArrayList<>();
+    final ArrayList<Modifier> mModifiers = new ArrayList<>();
     
     /**
      * Constructs a new item
      */
     protected Item(World world)
     {
-        m_world = world;
+        mWorld = world;
     }
     
     /**
@@ -70,7 +65,7 @@ public abstract class Item
      */
     protected Item(World world, String name)
     {
-        m_world = world;
+        mWorld = world;
         setName(name);
     }
     
@@ -80,7 +75,7 @@ public abstract class Item
      */
     public String getName()
     {
-        return m_name;
+        return mName;
     }
     
     /**
@@ -90,17 +85,17 @@ public abstract class Item
     public void setName(String name)
     {
         if(name == null || name.isEmpty()) throw new RuntimeException("Item name cannot be null or empty");
-        m_name = name;
+        mName = name;
     }
     
     public String getDescription()
     {
-        return m_description;
+        return mDescription;
     }
     
     public void setDescription(String description)
     {
-        m_description = description;
+        mDescription = description;
     }
     
     /**
@@ -109,7 +104,7 @@ public abstract class Item
      */
     public BigInteger getBasePrice()
     {
-        return m_basePrice;
+        return mBasePrice;
     }
     
     /**
@@ -120,17 +115,17 @@ public abstract class Item
     {
         if(basePrice == null) throw new RuntimeException("Base price cannot be null");
         if(basePrice.equals(BigInteger.ZERO)) throw new RuntimeException("Base price cannot be zero");
-        m_basePrice = basePrice;
+        mBasePrice = basePrice;
     }
     
     public void setBasePrice(long basePrice)
     {
-        m_basePrice = new BigInteger("" + basePrice);
+        mBasePrice = new BigInteger("" + basePrice);
     }
     
     public void setBasePrice(int basePrice)
     {
-        m_basePrice = new BigInteger("" + basePrice);
+        mBasePrice = new BigInteger("" + basePrice);
     }
     
     /**
@@ -139,7 +134,7 @@ public abstract class Item
      */
     public double getPriceMultiplier()
     {
-        return m_priceMultiplier;
+        return mPriceMultiplier;
     }
     
     /**
@@ -148,50 +143,50 @@ public abstract class Item
      */
     public void setPriceMultiplier(double multiplier)
     {
-        m_priceMultiplier = multiplier;
+        mPriceMultiplier = multiplier;
     }
     
     public long getMaxItemLevel()
     {
-        return m_maxItemLevel;
+        return mMaxItemLevel;
     }
     
     public void setMaxItemLevel(long maxLvl)
     {
         if(maxLvl <= 0) throw new RuntimeException("Max item level cannot be zero or negative");
-        m_maxItemLevel = maxLvl;
+        mMaxItemLevel = maxLvl;
     }
     
     public long getItemLevel()
     {
-        return m_itemLevel;
+        return mItemLevel;
     }
     
     public void setItemLevel(long lvl)
     {
         if(lvl < 0) throw new RuntimeException("Item level cannot be negative");
-        if(lvl > m_maxItemLevel) throw new RuntimeException("Item level cannot be greater than max. item level");
-        m_itemLevel = lvl;
+        if(lvl > mMaxItemLevel) throw new RuntimeException("Item level cannot be greater than max. item level");
+        mItemLevel = lvl;
     }
     
     public void upgrade()
     {
-        if(m_itemLevel < m_maxItemLevel)
+        if(mItemLevel < mMaxItemLevel)
         {
-            m_itemLevel++;
+            mItemLevel++;
         }
     }
     
     public void downgrade()
     {
-        if(m_itemLevel > 0)
+        if(mItemLevel > 0)
         {
-            m_itemLevel--;
+            mItemLevel--;
         }
     }
     
     public void maximize()
     {
-        m_itemLevel = m_maxItemLevel;
+        mItemLevel = mMaxItemLevel;
     }
 }

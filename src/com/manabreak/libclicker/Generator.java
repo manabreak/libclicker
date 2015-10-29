@@ -20,99 +20,99 @@ public class Generator extends Item
     /**
      * World this generator currently belongs to
      */
-    private World m_world = null;
+    private World mWorld = null;
     
     /**
      * Callback for extended functionality
      */
-    private Callback m_callback = null;
+    private Callback mCallback = null;
     
     /**
      * Currency this generator should generate
      */
-    private Currency m_currency;
+    private Currency mCurrency;
     
     /**
      * How many times this generator has been processed
      */
-    private long m_timesProcessed = 0;
+    private long mTimesProcessed = 0;
     
     /**
      * Base amount of resources this generator generates
      */
-    private BigInteger m_baseAmount;
+    private BigInteger mBaseAmount;
     
     /**
      * Multiplier used to increase the amount of resources generated
      * when this generator is upgraded
      */
-    private double m_amountMultiplier;
+    private double mAmountMultiplier;
     
     /**
      * Probability for this generator to "work"
      */
-    private double m_probability;
+    private double mProbability;
     
     /**
      * Should this generator use probability?
      */
-    private boolean m_useProbability;
+    private boolean mUseProbability;
     
     /**
      * RNG for probability
      */
-    private Random m_random;
+    private Random mRandom;
     
     /**
      * Should we take remainders into consideration?
      */
-    private boolean m_useRemainder;
+    private boolean mUseRemainder;
     
     /**
      * Remainder of the last processing cycle
      */
-    private double m_remainder;
+    private double mRemainder;
     
     /**
      * Cooldown time between processing cycles.
      */
-    private double m_cooldown;
+    private double mCooldown;
     
     /**
      * List of active modifiers attached to this generator
      */
-    private ArrayList<GeneratorModifier> m_modifiers = new ArrayList<>();
+    private ArrayList<GeneratorModifier> mModifiers = new ArrayList<>();
     
     /**
      * Builder class for creating new generators
      */
     public static class Builder
     {
-        private final World m_world;
-        private String m_name = "Nameless generator";
-        private Callback m_onProcessed = null;
-        private Currency m_currency = null;
-        private BigInteger m_baseAmount = BigInteger.ONE;
-        private double m_amountMultiplier = 1.1;
-        private long m_maxLevel = Long.MAX_VALUE;
-        private BigInteger m_basePrice = BigInteger.ONE;
-        private double m_priceMultiplier = 1.1;
-        private double m_probability = 1.0;
-        private boolean m_probabilitySet = false;
-        private boolean m_useRemainder = true;
-        private double m_cooldown = 0.0;
+        private final World mWorld;
+        private String mName = "Nameless generator";
+        private Callback mOnProcessed = null;
+        private Currency mCurrency = null;
+        private BigInteger mBaseAmount = BigInteger.ONE;
+        private double mAmountMultiplier = 1.1;
+        private long mMaxLevel = Long.MAX_VALUE;
+        private BigInteger mBasePrice = BigInteger.ONE;
+        private double mPriceMultiplier = 1.1;
+        private double mProbability = 1.0;
+        private boolean mProbabilitySet = false;
+        private boolean mUseRemainder = true;
+        private double mCooldown = 0.0;
         /**
          * Creates a new generator builder
          * @param world World to build the generator into
          */
         public Builder(World world)
         {
-            m_world = world;
+            mWorld = world;
         }
         
         public Builder cooldown(double cooldown)
         {
-            m_cooldown = cooldown;
+            mCooldown = cooldown;
             return this;
         }
         
@@ -123,7 +123,7 @@ public class Generator extends Item
          */
         public Builder useRemainder()
         {
-            m_useRemainder = true;
+            mUseRemainder = true;
             return this;
         }
         
@@ -133,7 +133,7 @@ public class Generator extends Item
          */
         public Builder discardRemainder()
         {
-            m_useRemainder = false;
+            mUseRemainder = false;
             return this;
         }
         
@@ -144,7 +144,7 @@ public class Generator extends Item
          */
         public Builder name(String name)
         {
-            m_name = name;
+            mName = name;
             return this;
         }
         
@@ -156,7 +156,7 @@ public class Generator extends Item
          */
         public Builder multiplier(double multiplier)
         {
-            m_amountMultiplier = multiplier;
+            mAmountMultiplier = multiplier;
             return this;
         }
         
@@ -169,7 +169,7 @@ public class Generator extends Item
         public Builder maxLevel(long maxLevel)
         {
             if(maxLevel <= 0) throw new IllegalArgumentException("Max level must be greater than 0");
-            m_maxLevel = maxLevel;
+            mMaxLevel = maxLevel;
             return this;
         }
         
@@ -183,7 +183,7 @@ public class Generator extends Item
         public Builder baseAmount(BigInteger amount)
         {
             if(amount == null) throw new IllegalArgumentException("Base amount cannot be null");
-            m_baseAmount = amount;
+            mBaseAmount = amount;
             return this;
         }
         
@@ -196,7 +196,7 @@ public class Generator extends Item
          */
         public Builder baseAmount(long amount)
         {
-            m_baseAmount = new BigInteger("" + amount);
+            mBaseAmount = new BigInteger("" + amount);
             return this;
         }
         
@@ -209,7 +209,7 @@ public class Generator extends Item
          */
         public Builder baseAmount(int amount)
         {
-            m_baseAmount = new BigInteger("" + amount);
+            mBaseAmount = new BigInteger("" + amount);
             return this;
         }
         
@@ -222,7 +222,7 @@ public class Generator extends Item
         public Builder generate(Currency c) throws IllegalArgumentException
         {
             if(c == null) throw new IllegalArgumentException("Currency cannot be null");
-            m_currency = c;
+            mCurrency = c;
             return this;
         }
         
@@ -234,31 +234,31 @@ public class Generator extends Item
          */
         public Builder callback(Callback callback)
         {
-            m_onProcessed = callback;
+            mOnProcessed = callback;
             return this;
         }
         
         public Builder price(BigInteger price)
         {
-            m_basePrice = price;
+            mBasePrice = price;
             return this;
         }
         
         public Builder price(long price)
         {
-            m_basePrice = new BigInteger("" + price);
+            mBasePrice = new BigInteger("" + price);
             return this;
         }
         
         public Builder price(int price)
         {
-            m_basePrice = new BigInteger("" + price);
+            mBasePrice = new BigInteger("" + price);
             return this;
         }
         
         public Builder priceMultiplier(double multiplier)
         {
-            m_priceMultiplier = multiplier;
+            mPriceMultiplier = multiplier;
             return this;
         }
         
@@ -270,8 +270,8 @@ public class Generator extends Item
         public Builder probability(double probability)
         {
             if(probability < 0 || probability > 1.0) throw new IllegalArgumentException("Probability should be between 0.0 and 1.0");
-            m_probability = probability;
-            m_probabilitySet = true;
+            mProbability = probability;
+            mProbabilitySet = true;
             return this;
         }
         
@@ -281,20 +281,20 @@ public class Generator extends Item
          */
         public Generator build()
         {
-            Generator g = new Generator(m_world, m_name);
-            g.m_callback = m_onProcessed;
-            g.m_currency = m_currency;
-            g.m_amountMultiplier = m_amountMultiplier;
-            g.m_baseAmount = m_baseAmount;
-            g.m_maxItemLevel = m_maxLevel;
-            g.m_basePrice = m_basePrice;
-            g.m_priceMultiplier = m_priceMultiplier;
-            g.m_probability = m_probability;
-            g.m_useProbability = m_probabilitySet;
-            g.m_random = new Random();
-            g.m_random.setSeed(g.hashCode());
-            g.m_useRemainder = m_useRemainder;
-            g.m_cooldown = m_cooldown;
+            Generator g = new Generator(mWorld, mName);
+            g.mCallback = mOnProcessed;
+            g.mCurrency = mCurrency;
+            g.mAmountMultiplier = mAmountMultiplier;
+            g.mBaseAmount = mBaseAmount;
+            g.mMaxItemLevel = mMaxLevel;
+            g.mBasePrice = mBasePrice;
+            g.mPriceMultiplier = mPriceMultiplier;
+            g.mProbability = mProbability;
+            g.mUseProbability = mProbabilitySet;
+            g.mRandom = new Random();
+            g.mRandom.setSeed(g.hashCode());
+            g.mUseRemainder = mUseRemainder;
+            g.mCooldown = mCooldown;
             return g;
         }
     }
@@ -321,7 +321,7 @@ public class Generator extends Item
      */
     void onAdd(World world)
     {
-        if(m_world == null) m_world = world;
+        if(mWorld == null) mWorld = world;
     }
     
     /**
@@ -329,7 +329,7 @@ public class Generator extends Item
      */
     void onRemove(World world)
     {
-        m_world = null;
+        mWorld = null;
     }
     
     /**
@@ -337,8 +337,8 @@ public class Generator extends Item
      */
     void remove()
     {
-        m_world.removeGenerator(this);
-        m_world = null;
+        mWorld.removeGenerator(this);
+        mWorld = null;
     }
     
     /**
@@ -347,7 +347,7 @@ public class Generator extends Item
      */
     World getWorld()
     {
-        return m_world;
+        return mWorld;
     }
 
     /**
@@ -355,9 +355,9 @@ public class Generator extends Item
      */
     public void upgrade()
     {
-        if(m_itemLevel < m_maxItemLevel)
+        if(mItemLevel < mMaxItemLevel)
         {
-            m_itemLevel++;
+            mItemLevel++;
         }
     }
     
@@ -366,9 +366,9 @@ public class Generator extends Item
      */
     public void downgrade()
     {
-        if(m_itemLevel > 0)
+        if(mItemLevel > 0)
         {
-            m_itemLevel--;
+            mItemLevel--;
         }
     }
     
@@ -379,17 +379,17 @@ public class Generator extends Item
      */
     public BigInteger getGeneratedAmount()
     {
-        if(m_itemLevel == 0) return BigInteger.ZERO;
+        if(mItemLevel == 0) return BigInteger.ZERO;
         
-        BigDecimal tmp = new BigDecimal(m_baseAmount);
-        tmp = tmp.multiply(new BigDecimal(Math.pow(m_amountMultiplier, m_itemLevel - 1)));
-        if(m_useRemainder)
+        BigDecimal tmp = new BigDecimal(mBaseAmount);
+        tmp = tmp.multiply(new BigDecimal(Math.pow(mAmountMultiplier, mItemLevel - 1)));
+        if(mUseRemainder)
         {
             double tmpRem = tmp.remainder(BigDecimal.ONE).doubleValue();
-            m_remainder += tmpRem;
-            if(m_remainder >= 0.999)
+            mRemainder += tmpRem;
+            if(mRemainder >= 0.999)
             {
-                m_remainder -= 1.0;
+                mRemainder -= 1.0;
                 tmp = tmp.add(new BigDecimal(1));
             }
         }
@@ -401,9 +401,9 @@ public class Generator extends Item
     
     private BigDecimal processModifiers(BigDecimal val)
     {
-        if(m_modifiers.size() == 0) return val;
+        if(mModifiers.size() == 0) return val;
         
-        for(GeneratorModifier m : m_modifiers)
+        for(GeneratorModifier m : mModifiers)
         {
             double d = m.getMultiplier();
             if(d != 1.0)
@@ -423,9 +423,9 @@ public class Generator extends Item
      */
     private boolean isWorking()
     {
-        if(m_itemLevel > 0)
+        if(mItemLevel > 0)
         {
-            if(!m_useProbability || m_random.nextDouble() < m_probability) return true;
+            if(!mUseProbability || mRandom.nextDouble() < mProbability) return true;
         }
         return false;
     }
@@ -438,9 +438,9 @@ public class Generator extends Item
     {
         if(isWorking())
         {
-            m_currency.add(getGeneratedAmount());   
-            m_timesProcessed++;
-            if(m_callback != null) m_callback.onProcessed();
+            mCurrency.add(getGeneratedAmount());   
+            mTimesProcessed++;
+            if(mCallback != null) mCallback.onProcessed();
         }
     }
     
@@ -450,14 +450,14 @@ public class Generator extends Item
      */
     public long getTimesProcessed()
     {
-        return m_timesProcessed;
+        return mTimesProcessed;
     }
     
     void attachModifier(GeneratorModifier modifier)
     {
-        if(modifier != null && !m_modifiers.contains(modifier))
+        if(modifier != null && !mModifiers.contains(modifier))
         {
-            m_modifiers.add(modifier);
+            mModifiers.add(modifier);
         }
     }
     
@@ -465,7 +465,7 @@ public class Generator extends Item
     {
         if(modifier != null)
         {
-            m_modifiers.remove(modifier);
+            mModifiers.remove(modifier);
         }
     }
 }

@@ -31,43 +31,43 @@ package com.manabreak.libclicker;
  */
 public class CurrencyFormatter
 {
-    private final Currency m_currency;
+    private final Currency mCurrency;
     
-    private boolean m_groupDigits;
-    private String m_thousandSeparator;
-    private boolean m_showDecimals;
-    private int m_decimals;
-    private String m_decimalSeparator;
+    private boolean mGroupDigits;
+    private String mThousandSeparator;
+    private boolean mShowDecimals;
+    private int mDecimals;
+    private String mDecimalSeparator;
     
-    private boolean m_cutAtHighest;
+    private boolean mCutAtHighest;
     
     public static class Builder
     {
-        private final Currency m_currency;
+        private final Currency mCurrency;
         
-        private boolean m_groupDigits = true;
-        private String m_thousandSeparator = ",";
+        private boolean mGroupDigits = true;
+        private String mThousandSeparator = ",";
         
-        private boolean m_showDecimals = false;
-        private int m_decimals = 2;
-        private String m_decimalSeparator;
+        private boolean mShowDecimals = false;
+        private int mDecimals = 2;
+        private String mDecimalSeparator;
         
-        private boolean m_cutAtHighest = true;
+        private boolean mCutAtHighest = true;
         
         public Builder(Currency c)
         {
-            m_currency = c;
+            mCurrency = c;
         }
         
         public Builder showHighestThousand()
         {
-            m_cutAtHighest = true;
+            mCutAtHighest = true;
             return this;
         }
         
         public Builder showFully()
         {
-            m_cutAtHighest = false;
+            mCutAtHighest = false;
             return this;
         }
         
@@ -78,15 +78,15 @@ public class CurrencyFormatter
         
         public Builder groupDigits(String separator)
         {
-            m_groupDigits = true;
-            m_thousandSeparator = separator;
+            mGroupDigits = true;
+            mThousandSeparator = separator;
             return this;
         }
         
         public Builder dontGroupDigits()
         {
-            m_groupDigits = false;
-            m_thousandSeparator = null;
+            mGroupDigits = false;
+            mThousandSeparator = null;
             return this;
         }
         
@@ -107,43 +107,43 @@ public class CurrencyFormatter
         
         public Builder showDecimals(int count, String separator)
         {
-            m_showDecimals = true;
-            m_decimals = count;
-            m_decimalSeparator = separator;
+            mShowDecimals = true;
+            mDecimals = count;
+            mDecimalSeparator = separator;
             return this;
         }
         
         public Builder dontShowDecimals()
         {
-            m_showDecimals = false;
-            m_decimals = 0;
-            m_decimalSeparator = null;
+            mShowDecimals = false;
+            mDecimals = 0;
+            mDecimalSeparator = null;
             return this;
         }
         
         public CurrencyFormatter build()
         {
-            CurrencyFormatter cf = new CurrencyFormatter(m_currency);
-            cf.m_cutAtHighest = m_cutAtHighest;
-            cf.m_showDecimals = m_showDecimals;
-            cf.m_decimals = m_decimals;
-            cf.m_decimalSeparator = m_decimalSeparator;
-            cf.m_groupDigits = m_groupDigits;
-            cf.m_thousandSeparator = m_thousandSeparator;
+            CurrencyFormatter cf = new CurrencyFormatter(mCurrency);
+            cf.mCutAtHighest = mCutAtHighest;
+            cf.mShowDecimals = mShowDecimals;
+            cf.mDecimals = mDecimals;
+            cf.mDecimalSeparator = mDecimalSeparator;
+            cf.mGroupDigits = mGroupDigits;
+            cf.mThousandSeparator = mThousandSeparator;
             return cf;
         }
     }
     
     private CurrencyFormatter(Currency currency)
     {
-        m_currency = currency;
+        mCurrency = currency;
     }
 
     @Override
     public String toString()
     {
-        String raw = m_currency.getAmountAsString();
-        if(m_cutAtHighest)
+        String raw = mCurrency.getAmountAsString();
+        if(mCutAtHighest)
         {
             int length = raw.length();
             if(length < 4) return raw;
@@ -151,24 +151,24 @@ public class CurrencyFormatter
             rem = rem == 0 ? 3 : rem;
             String top = raw.substring(0, rem);
             
-            if(m_showDecimals)
+            if(mShowDecimals)
             {
-                top += m_decimalSeparator;
-                int decimals = Math.min(m_decimals, length - rem);
+                top += mDecimalSeparator;
+                int decimals = Math.min(mDecimals, length - rem);
                 top += raw.substring(rem, rem + decimals);
             }
             return top;
         }
         else
         {
-            if(m_groupDigits)
+            if(mGroupDigits)
             {
                 int len = raw.length() - 3;
                 for(int i = len; i > 0; --i)
                 {
                     if((len - i) % 3 == 0)
                     {
-                        raw = raw.substring(0, i) + m_thousandSeparator + raw.substring(i);
+                        raw = raw.substring(0, i) + mThousandSeparator + raw.substring(i);
                     }
                 }
             }

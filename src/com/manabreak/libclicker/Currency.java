@@ -2,7 +2,6 @@ package com.manabreak.libclicker;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 
 /**
  * Base class for all currencies.
@@ -14,40 +13,35 @@ public class Currency
     /**
      * Name of this currency
      */
-    private String m_name;
+    private String mName;
     
     /**
      * Huge number to hold the amount for this currency
      */
-    private BigInteger m_value = BigInteger.ZERO;
+    private BigInteger mValue = BigInteger.ZERO;
     
-    /**
-     * How many decimals should be shown?
-     */
-    private int m_decimals = 2;
-    
-    private final World m_world;
+    private final World mWorld;
     
     public static class Builder
     {
-        private final World m_world;
-        private String m_name = "Gold";
+        private final World mWorld;
+        private String mName = "Gold";
         
         public Builder(World world)
         {
-            m_world = world;
+            mWorld = world;
         }
         
         public Builder name(String name)
         {
-            m_name = name;
+            mName = name;
             return this;
         }
         
         public Currency build()
         {
-            Currency c = new Currency(m_world, m_name);
-            m_world.addCurrency(c);
+            Currency c = new Currency(mWorld, mName);
+            mWorld.addCurrency(c);
             return c;
         }
     }
@@ -58,8 +52,8 @@ public class Currency
      */
     private Currency(World world, String name)
     {
-        m_world = world;
-        m_name = name;
+        mWorld = world;
+        mName = name;
     }
     
     /**
@@ -68,44 +62,44 @@ public class Currency
      */
     public String getName()
     {
-        return m_name;
+        return mName;
     }
     
     public String getAmountAsString()
     {
-        return m_value.toString();
+        return mValue.toString();
     }
     
     @Override
     public String toString()
     {
-        return m_name + ": " + getAmountAsString();
+        return mName + ": " + getAmountAsString();
     }
 
     BigInteger getValue()
     {
-        return m_value;
+        return mValue;
     }
     
     public void add(BigInteger other)
     {
-        m_value = m_value.add(other);
+        mValue = mValue.add(other);
     }
     
     public void sub(BigInteger other)
     {
-        m_value = m_value.subtract(other);
+        mValue = mValue.subtract(other);
     }
     
     public void multiply(double multiplier)
     {
-        BigDecimal tmp = new BigDecimal(m_value);
+        BigDecimal tmp = new BigDecimal(mValue);
         tmp = tmp.multiply(new BigDecimal(multiplier));
-        m_value = tmp.toBigInteger();
+        mValue = tmp.toBigInteger();
     }
 
     void set(BigInteger newValue)
     {
-        m_value = newValue;
+        mValue = newValue;
     }
 }
