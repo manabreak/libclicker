@@ -1,5 +1,5 @@
 # libclicker
-Libclicker is a library for creating idle / procedural / clicker games.
+Libclicker is a library for creating idle / incremental / clicker games.
 It features resources, resource generators, automators for generators and
 modifiers, as well as utilities e.g. for presentation.
 

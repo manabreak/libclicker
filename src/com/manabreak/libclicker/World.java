@@ -131,11 +131,6 @@ public class World
      */
     public void update(double seconds)
     {
-        for(Modifier m : m_modifiers)
-        {
-            m.update(seconds);
-        }
-        
         seconds *= m_speedMultiplier;
         
         if(m_updateAutomators)

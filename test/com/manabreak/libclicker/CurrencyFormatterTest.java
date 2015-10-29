@@ -25,9 +25,7 @@ package com.manabreak.libclicker;
 
 import java.math.BigInteger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,20 +39,6 @@ public class CurrencyFormatterTest
     World w;
     Currency c;
     CurrencyFormatter cf;
-    
-    public CurrencyFormatterTest()
-    {
-    }
-    
-    @BeforeClass
-    public static void setUpClass()
-    {
-    }
-    
-    @AfterClass
-    public static void tearDownClass()
-    {
-    }
     
     @Before
     public void setUp()
