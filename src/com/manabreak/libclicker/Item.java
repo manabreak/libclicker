@@ -23,6 +23,7 @@
  */
 package com.manabreak.libclicker;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
@@ -130,6 +131,29 @@ public abstract class Item
         return mBasePrice;
     }
     
+    public BigInteger getPrice()
+    {
+        BigDecimal tmp = new BigDecimal(mBasePrice);
+        tmp = tmp.multiply(new BigDecimal(Math.pow(mPriceMultiplier, mItemLevel)));
+        return tmp.toBigInteger();
+    }
+    
+    public PurchaseResult buyWith(Currency currency)
+    {
+        if(currency == null) throw new IllegalArgumentException("Currency cannot be null");
+        if(mItemLevel >= mMaxItemLevel) return PurchaseResult.MAX_LEVEL_REACHED;
+        
+        BigInteger price = getPrice();
+        BigInteger result = currency.getValue().subtract(price);
+        if(result.signum() < 0)
+        {
+            return PurchaseResult.INSUFFICIENT_FUNDS;
+        }
+        currency.sub(price);
+        upgrade();
+        return PurchaseResult.OK;
+    }
+    
     /**
      * Sets the base price of this item
      * @param basePrice New base price for this item
@@ -187,9 +211,7 @@ public abstract class Item
     
     public void setItemLevel(long lvl)
     {
-        if(lvl < 0) throw new RuntimeException("Item level cannot be negative");
-        if(lvl > mMaxItemLevel) throw new RuntimeException("Item level cannot be greater than max. item level");
-        mItemLevel = lvl;
+        mItemLevel = lvl < 0 ? 0 : lvl > mMaxItemLevel ? mMaxItemLevel : lvl;
     }
     
     public void upgrade()
