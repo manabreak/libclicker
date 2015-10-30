@@ -23,6 +23,7 @@
  */
 package com.manabreak.libclicker;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,27 +32,27 @@ import java.util.List;
  *
  * @author Harri Pellikka
  */
-public class World
+public class World implements Serializable
 {
     /**
      * Active generators
      */
-    private final ArrayList<Generator> mGenerators = new ArrayList<>();
+    private ArrayList<Generator> mGenerators = new ArrayList<>();
     
     /**
      * Active automators
      */
-    private final ArrayList<Automator> mAutomators = new ArrayList<>();
+    private ArrayList<Automator> mAutomators = new ArrayList<>();
     
     /**
      * Currencies in use
      */
-    private final ArrayList<Currency> mCurrencies = new ArrayList<>();
+    private ArrayList<Currency> mCurrencies = new ArrayList<>();
     
     /**
      * Modifiers in use
      */
-    private final ArrayList<Modifier> mModifiers = new ArrayList<>();
+    private ArrayList<Modifier> mModifiers = new ArrayList<>();
     
     /**
      * Speed multiplier - used to multiply the time the world advances
@@ -205,5 +206,28 @@ public class World
         {
             mAutomators.remove(automator);
         }
+    }
+
+    List<Automator> getAutomators()
+    {
+        return mAutomators;
+    }
+    
+    List<Modifier> getModifiers()
+    {
+        return mModifiers;
+    }
+    
+    void removeModifier(Modifier modifier)
+    {
+        if(modifier != null)
+        {
+            mModifiers.remove(modifier);
+        }
+    }
+    
+    boolean isAutomationEnabled()
+    {
+        return mUpdateAutomators;
     }
 }

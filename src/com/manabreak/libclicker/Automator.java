@@ -23,6 +23,8 @@
  */
 package com.manabreak.libclicker;
 
+import java.io.Serializable;
+
 /**
  * Automator class for automating generators.
  * 
@@ -32,7 +34,7 @@ package com.manabreak.libclicker;
  *
  * @author Harri Pellikka
  */
-public class Automator extends Item
+public class Automator extends Item implements Serializable
 {
     private Generator mGenerator;
     private double mTickRate = 1.0;

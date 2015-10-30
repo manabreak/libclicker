@@ -24,6 +24,7 @@
 package com.manabreak.libclicker;
 
 import com.manabreak.libclicker.Modifier.GeneratorModifier;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import java.util.Random;
  *
  * @author Harri Pellikka
  */
-public class Generator extends Item
+public class Generator extends Item implements Serializable
 {
     public interface Callback
     {
@@ -318,6 +319,7 @@ public class Generator extends Item
             g.mRandom.setSeed(g.hashCode());
             g.mUseRemainder = mUseRemainder;
             g.mCooldown = mCooldown;
+            mWorld.addGenerator(g);
             return g;
         }
     }

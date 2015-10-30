@@ -23,6 +23,7 @@
  */
 package com.manabreak.libclicker;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
  * 
  * @author Harri Pellikka
  */
-public abstract class Item
+public abstract class Item implements Serializable
 {
     /**
      * The base price of the item (i.e. the price of the first level of this item)
@@ -77,6 +78,7 @@ public abstract class Item
     
     /**
      * Constructs a new item
+     * @param world World this item belongs to
      */
     protected Item(World world)
     {
@@ -85,6 +87,7 @@ public abstract class Item
     
     /**
      * Constructs a new item
+     * @param world World this item belongs to
      * @param name Name of this item
      */
     protected Item(World world, String name)

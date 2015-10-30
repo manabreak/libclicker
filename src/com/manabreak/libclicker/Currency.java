@@ -23,6 +23,7 @@
  */
 package com.manabreak.libclicker;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -31,7 +32,7 @@ import java.math.BigInteger;
  *
  * @author Harri Pellikka
  */
-public class Currency
+public class Currency implements Serializable
 {
     /**
      * Name of this currency

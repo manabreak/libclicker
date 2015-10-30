@@ -23,6 +23,8 @@
  */
 package com.manabreak.libclicker;
 
+import java.io.Serializable;
+
 /**
  * A base class for all the modifiers.
  * 
@@ -32,7 +34,7 @@ package com.manabreak.libclicker;
  *
  * @author Harri Pellikka
  */
-public abstract class Modifier
+public abstract class Modifier extends Item implements Serializable
 {
     private boolean mEnabled = false;
     
@@ -41,7 +43,6 @@ public abstract class Modifier
      */
     static class WorldModifier extends Modifier
     {
-        private World mWorld;
         private double mSpeedMultiplier;
         private boolean mDisableActivators;
         
@@ -50,7 +51,7 @@ public abstract class Modifier
         
         WorldModifier(World world)
         {
-            mWorld = world;
+            super(world);
         }
 
         @Override
@@ -58,14 +59,14 @@ public abstract class Modifier
         {
             if(mSpeedMultiplier != 1.0)
             {
-                mSpeedMultiplierBefore = mWorld.getSpeedMultiplier();
+                mSpeedMultiplierBefore = getWorld().getSpeedMultiplier();
                 mSpeedMultiplierAfter = mSpeedMultiplier * mSpeedMultiplierBefore;
-                mWorld.setSpeedMultiplier(mSpeedMultiplierAfter);
+                getWorld().setSpeedMultiplier(mSpeedMultiplierAfter);
             }
             
             if(mDisableActivators)
             {
-                mWorld.disableAutomators();
+                getWorld().disableAutomators();
             }
         }
 
@@ -74,14 +75,14 @@ public abstract class Modifier
         {
             if(mSpeedMultiplier != 1.0)
             {
-                double d = mWorld.getSpeedMultiplier();
+                double d = getWorld().getSpeedMultiplier();
                 d /= mSpeedMultiplier;
-                mWorld.setSpeedMultiplier(d);
+                getWorld().setSpeedMultiplier(d);
             }
 
             if(mDisableActivators)
             {
-                mWorld.enableAutomators();
+                getWorld().enableAutomators();
             }
         }
     }
@@ -96,6 +97,7 @@ public abstract class Modifier
         
         GeneratorModifier(Generator generator)
         {
+            super(generator.getWorld());
             mGenerator = generator;
         }
 
@@ -240,9 +242,9 @@ public abstract class Modifier
         }
     }
     
-    private Modifier()
+    private Modifier(World world)
     {
-        
+        super(world);
     }
     
     protected abstract void onEnable();
@@ -256,6 +258,7 @@ public abstract class Modifier
         if(!mEnabled)
         {
             mEnabled = true;
+            getWorld().addModifier(this);
             onEnable();
         }
     }
@@ -268,6 +271,7 @@ public abstract class Modifier
         if(mEnabled)
         { 
             onDisable();
+            getWorld().removeModifier(this);
             mEnabled = false;
         }
     }
