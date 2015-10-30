@@ -25,6 +25,10 @@ package com.manabreak.libclicker;
 
 /**
  * Automator class for automating generators.
+ * 
+ * Normally generators are manually controlled, i.e. they generate resources
+ * when explicitly told to. Automators are used to trigger generators
+ * during the world's update cycles.
  *
  * @author Harri Pellikka
  */
@@ -43,29 +47,67 @@ public class Automator extends Item
         private String mName = "Nameless automator";
         private boolean mEnabled = true;
         
+        /**
+         * Constructs a new automator builder
+         * @param world World the automator belongs to
+         */
         public Builder(World world)
         {
             mWorld = world;
         }
         
+        /**
+         * Constructs a new automator builder for the given generator
+         * @param world World the automator belongs to
+         * @param generator Generator to automate
+         */
+        public Builder(World world, Generator generator)
+        {
+            mWorld = world;
+            mGenerator = generator;
+        }
+        
+        /**
+         * Sets the target generator this automator should automate.
+         * 
+         * @param generator Generator to automate
+         * @return This builder for chaining
+         */
         public Builder automate(Generator generator)
         {
             mGenerator = generator;
             return this;
         }
         
+        /**
+         * Sets the name for this automator.
+         * 
+         * @param name Name
+         * @return This builder for chaining
+         */
         public Builder name(String name)
         {
             mName = name;
             return this;
         }
         
+        /**
+         * Sets the tick rate of this automator, i.e. how often
+         * this automator should do its business.
+         * 
+         * @param seconds Tick rate in seconds
+         * @return This builder for chaining
+         */
         public Builder every(double seconds)
         {
             mTickRate = seconds;
             return this;
         }
         
+        /**
+         * Constructs the automator based on the given properties.
+         * @return The automator
+         */
         public Automator build()
         {
             if(mGenerator == null) throw new IllegalStateException("Generator cannot be null");
@@ -84,17 +126,32 @@ public class Automator extends Item
         super(world, name);
     }
     
+    /**
+     * Enables this automator. Automators are enabled by default when
+     * they are created.
+     */
     public void enable()
     {
-        mEnabled = true;
+        if(!mEnabled)
+        {
+            getWorld().addAutomator(this);
+            mEnabled = true;
+        }
     }
     
+    /**
+     * Disables this automator, effectively turning the automation off.
+     */
     public void disable()
     {
-        mEnabled = false;
+        if(mEnabled)
+        {
+            getWorld().removeAutomator(this);
+            mEnabled = false;
+        }
     }
     
-    public void update(double delta)
+    void update(double delta)
     {
         if(!mEnabled) return;
         
@@ -106,11 +163,20 @@ public class Automator extends Item
         }
     }
     
+    /**
+     * Retrieves the tick rate of this automator.
+     * @return Tick rate in seconds
+     */
     public double getTickRate()
     {
         return mTickRate;
     }
     
+    /**
+     * Sets the tick rate of this automator.
+     * 
+     * @param tickRate Tick rate in seconds
+     */
     public void setTickRate(double tickRate)
     {
         mTickRate = tickRate;

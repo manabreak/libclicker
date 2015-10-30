@@ -46,11 +46,6 @@ public class Generator extends Item
     }
     
     /**
-     * World this generator currently belongs to
-     */
-    private World mWorld = null;
-    
-    /**
      * Callback for extended functionality
      */
     private Callback mCallback = null;
@@ -342,40 +337,6 @@ public class Generator extends Item
     private Generator(World world, String name)
     {
         super(world, name);
-    }
-    
-    /**
-     * Called when this generator is added to the world
-     */
-    void onAdd(World world)
-    {
-        if(mWorld == null) mWorld = world;
-    }
-    
-    /**
-     * Called when this generator is removed from the world
-     */
-    void onRemove(World world)
-    {
-        mWorld = null;
-    }
-    
-    /**
-     * Removes this generator from the world
-     */
-    void remove()
-    {
-        mWorld.removeGenerator(this);
-        mWorld = null;
-    }
-    
-    /**
-     * Retrieves the world this generator belongs to
-     * @return 
-     */
-    World getWorld()
-    {
-        return mWorld;
     }
 
     /**

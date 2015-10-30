@@ -234,4 +234,9 @@ public abstract class Item
     {
         mItemLevel = mMaxItemLevel;
     }
+    
+    protected World getWorld()
+    {
+        return mWorld;
+    }
 }

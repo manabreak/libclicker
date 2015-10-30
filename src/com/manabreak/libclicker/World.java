@@ -81,7 +81,6 @@ public class World
         if(generator != null && !mGenerators.contains(generator))
         {
             mGenerators.add(generator);
-            generator.onAdd(this);
         }
     }
 
@@ -102,7 +101,6 @@ public class World
     {
         if(generator != null && mGenerators.contains(generator))
         {
-            generator.onRemove(this);
             mGenerators.remove(generator);
         }
     }
@@ -199,5 +197,13 @@ public class World
     void enableAutomators()
     {
         mUpdateAutomators = true;
+    }
+
+    void removeAutomator(Automator automator)
+    {
+        if(automator != null)
+        {
+            mAutomators.remove(automator);
+        }
     }
 }
