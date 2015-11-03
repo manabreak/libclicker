@@ -241,4 +241,65 @@ public class CurrencyFormatterTest
         assertEquals("123.4", cf.toString());
         
     }
+    
+    @Test
+    public void testNames()
+    {
+        cf = new CurrencyFormatter.Builder(c)
+            .showDecimals(2)
+            .showHighestThousand()
+            .useAbbreviations(new String[]{"K", "M", "B", "T", "aa"})
+            .build();
+        
+        c.set(new BigInteger("123"));
+        assertEquals("123", cf.toString());
+        
+        c.set(new BigInteger("1234"));
+        assertEquals("1.23K", cf.toString());
+        
+        c.set(new BigInteger("12345"));
+        assertEquals("12.34K", cf.toString());
+        
+        c.set(new BigInteger("123456"));
+        assertEquals("123.45K", cf.toString());
+        
+        c.set(new BigInteger("1234567"));
+        assertEquals("1.23M", cf.toString());
+        
+        c.set(new BigInteger("12345678"));
+        assertEquals("12.34M", cf.toString());
+        
+        c.set(new BigInteger("123456789"));
+        assertEquals("123.45M", cf.toString());
+        
+        c.set(new BigInteger("1234567890"));
+        assertEquals("1.23B", cf.toString());
+        
+        c.set(new BigInteger("12312312312"));
+        assertEquals("12.31B", cf.toString());
+        
+        c.set(new BigInteger("123123123123"));
+        assertEquals("123.12B", cf.toString());
+        
+        c.set(new BigInteger("1231231231231"));
+        assertEquals("1.23T", cf.toString());
+        
+        c.set(new BigInteger("12312312312312"));
+        assertEquals("12.31T", cf.toString());
+        
+        c.set(new BigInteger("123123123123123"));
+        assertEquals("123.12T", cf.toString());
+        
+        c.set(new BigInteger("1231231231231231"));
+        assertEquals("1.23aa", cf.toString());
+        
+        c.set(new BigInteger("12312312312312312"));
+        assertEquals("12.31aa", cf.toString());
+        
+        c.set(new BigInteger("123123123123123123"));
+        assertEquals("123.12aa", cf.toString());
+        
+        c.set(new BigInteger("1231231231231231231"));
+        assertEquals("1.23", cf.toString());
+    }
 }

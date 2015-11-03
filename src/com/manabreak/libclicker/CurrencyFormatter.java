@@ -41,6 +41,8 @@ public class CurrencyFormatter
     
     private boolean mCutAtHighest;
     
+    private String[] mAbbreviations;
+    
     public static class Builder
     {
         private final Currency mCurrency;
@@ -53,6 +55,8 @@ public class CurrencyFormatter
         private String mDecimalSeparator;
         
         private boolean mCutAtHighest = true;
+        
+        private String[] mAbbreviations = null;
         
         public Builder(Currency c)
         {
@@ -121,6 +125,12 @@ public class CurrencyFormatter
             return this;
         }
         
+        public Builder useAbbreviations(String[] abbreviations)
+        {
+            mAbbreviations = abbreviations;
+            return this;
+        }
+        
         public CurrencyFormatter build()
         {
             CurrencyFormatter cf = new CurrencyFormatter(mCurrency);
@@ -130,6 +140,7 @@ public class CurrencyFormatter
             cf.mDecimalSeparator = mDecimalSeparator;
             cf.mGroupDigits = mGroupDigits;
             cf.mThousandSeparator = mThousandSeparator;
+            cf.mAbbreviations = mAbbreviations;
             return cf;
         }
     }
@@ -157,6 +168,16 @@ public class CurrencyFormatter
                 int decimals = Math.min(mDecimals, length - rem);
                 top += raw.substring(rem, rem + decimals);
             }
+            
+            if(mAbbreviations != null)
+            {
+                int tri = (raw.length() - 1) / 3;
+                if(tri > 0 && tri <= mAbbreviations.length)
+                {
+                    top += mAbbreviations[tri - 1];
+                }
+            }
+            
             return top;
         }
         else

@@ -24,6 +24,7 @@
 package com.manabreak.libclicker;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * Automator class for automating generators.
@@ -39,7 +40,9 @@ public class Automator extends Item implements Serializable
     private Generator mGenerator;
     private double mTickRate = 1.0;
     private double mTickTimer = 0.0;
+    private double mMultiplier;
     private boolean mEnabled;
+    private double mActualTickRate;
     
     public static class Builder
     {
@@ -48,6 +51,9 @@ public class Automator extends Item implements Serializable
         private double mTickRate = 1.0;
         private String mName = "Nameless automator";
         private boolean mEnabled = true;
+        private BigInteger mBasePrice = BigInteger.ONE;
+        private double mPriceMultiplier = 1.1;
+        private double mTickRateMultiplier = 1.08;
         
         /**
          * Constructs a new automator builder
@@ -67,6 +73,36 @@ public class Automator extends Item implements Serializable
         {
             mWorld = world;
             mGenerator = generator;
+        }
+        
+        public Builder basePrice(int price)
+        {
+            mBasePrice = new BigInteger("" + price);
+            return this;
+        }
+        
+        public Builder basePrice(long price)
+        {
+            mBasePrice = new BigInteger("" + price);
+            return this;
+        }
+        
+        public Builder basePrice(BigInteger price)
+        {
+            mBasePrice = price;
+            return this;
+        }
+        
+        public Builder priceMultiplier(double multiplier)
+        {
+            mPriceMultiplier = multiplier;
+            return this;
+        }
+        
+        public Builder tickRateMultiplier(double multiplier)
+        {
+            mTickRateMultiplier = multiplier;
+            return this;
         }
         
         /**
@@ -118,6 +154,9 @@ public class Automator extends Item implements Serializable
             a.mGenerator = mGenerator;
             a.mTickRate = mTickRate;
             a.mEnabled = mEnabled;
+            a.mBasePrice = mBasePrice;
+            a.mPriceMultiplier = mPriceMultiplier;
+            a.mMultiplier = mTickRateMultiplier;
             mWorld.addAutomator(a);
             return a;
         }
@@ -152,15 +191,31 @@ public class Automator extends Item implements Serializable
             mEnabled = false;
         }
     }
+
+    @Override
+    public void upgrade()
+    {
+        super.upgrade(); //To change body of generated methods, choose Tools | Templates.
+        mActualTickRate = getFinalTickRate();
+        System.out.println("Upgraded, final tick rate now: " + mActualTickRate);
+    }
+    
+    private double getFinalTickRate()
+    {
+        if(mItemLevel == 0) return 0.0;
+        double r = mTickRate;
+        double m = Math.pow(mMultiplier, mItemLevel - 1);
+        return r / m;
+    }
     
     void update(double delta)
     {
-        if(!mEnabled) return;
+        if(!mEnabled || mItemLevel == 0) return;
         
         mTickTimer += delta;
-        while(mTickTimer >= mTickRate)
+        while(mTickTimer >= mActualTickRate)
         {
-            mTickTimer -= mTickRate;
+            mTickTimer -= mActualTickRate;
             mGenerator.process();
         }
     }

@@ -4,10 +4,14 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/E:/Koodit/libclicker/test/com/manabreak/libclicker/GeneratorTest.java</file>
-            <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/HugeNumber.java</file>
+            <file>file:/E:/Koodit/libclicker/test/com/manabreak/libclicker/SerializationTest.java</file>
+            <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/Automator.java</file>
+            <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/CurrencyFormatter.java</file>
+            <file>file:/E:/Koodit/libclicker/test/com/manabreak/libclicker/CurrencyFormatterTest.java</file>
+            <file>file:/E:/Koodit/libclicker/test/com/manabreak/libclicker/ModifierTest.java</file>
             <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/Currency.java</file>
+            <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/Modifier.java</file>
             <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/World.java</file>
-            <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/CurrencyGenerator.java</file>
             <file>file:/E:/Koodit/libclicker/src/com/manabreak/libclicker/Generator.java</file>
             <file>file:/E:/Koodit/libclicker/test/com/manabreak/libclicker/WorldTest.java</file>
             <file>file:/E:/Koodit/libclicker/test/com/manabreak/libclicker/CurrencyTest.java</file>
