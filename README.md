@@ -200,5 +200,26 @@ In this example, if there's 123,456,789 gold, the output would be:
 Gold now: 123.45
 ```
 
-In the near future, names (thousands, millions, billions etc.) and shorthands
-(K, M, B, T...) will be implemented to the currency formatter.
+You usually want to use some indicators about the multitude of the currency (K for thousand,
+M for millions etc.). You can do this by supplying an array of "names" for each "thousand":
+
+```java
+CurrencyFormatter printGold = new CurrencyFormatter.Builder(gold)
+      .groupDigits()
+      .showHighestThousand()
+      .showDecimals(2)
+      .useAbbreviations(new String[] {"K", "M", "B", "T"})
+      .build();
+      
+System.out.println("Gold now: " + printGold);
+```
+
+In this case, if there's 123,456,789 gold, the output would be:
+
+```java
+Gold now: 123.45M
+```
+
+If the amount of currency is higher than the amount of abbreviations supplied,
+the abbreviation will be omitted. Similarly, if the amount is less than 1,000,
+no abbreviation will be added.
