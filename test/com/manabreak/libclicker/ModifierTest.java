@@ -101,13 +101,13 @@ public class ModifierTest
             .generate(c)
             .baseAmount(1)
             .build();
-        
         g.upgrade();
         
         Automator a = new Automator.Builder(w)
             .automate(g)
             .every(1.0)
             .build();
+        a.upgrade();
         
         assertEquals(BigInteger.ZERO, c.getValue());
         

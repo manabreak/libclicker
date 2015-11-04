@@ -23,6 +23,7 @@
  */
 package com.manabreak.libclicker;
 
+import com.manabreak.libclicker.Formatter.CurrencyFormatter;
 import java.math.BigInteger;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,8 +41,7 @@ public class GeneratorTest
         World w = new World();
         Currency c = new Currency.Builder(w).name("Gold").build();
         
-        CurrencyFormatter cf = new CurrencyFormatter
-            .Builder(c)
+        Formatter cf = new Formatter.ForCurrency(c)
             .showHighestThousand()
             .showDecimals()
             .build();

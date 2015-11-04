@@ -23,6 +23,7 @@
  */
 package com.manabreak.libclicker;
 
+
 import java.math.BigInteger;
 import org.junit.After;
 import org.junit.Before;
@@ -38,7 +39,7 @@ public class CurrencyFormatterTest
 {
     World w;
     Currency c;
-    CurrencyFormatter cf;
+    Formatter cf;
     
     @Before
     public void setUp()
@@ -62,7 +63,7 @@ public class CurrencyFormatterTest
         System.out.println("toString()");
         
         // Test the 
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .groupDigits()
             .showFully()
             .build();
@@ -97,7 +98,7 @@ public class CurrencyFormatterTest
     @Test
     public void testRaw() throws Exception
     {
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .dontGroupDigits()
             .showFully()
             .build();
@@ -132,7 +133,7 @@ public class CurrencyFormatterTest
     @Test
     public void testCutAtHighestWithDecimals() throws Exception
     {
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showHighestThousand()
             .showDecimals(2, ".")
             .build();
@@ -161,7 +162,7 @@ public class CurrencyFormatterTest
     @Test
     public void testCutAtHighestNoDecimals() throws Exception
     {
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showHighestThousand()
             .dontShowDecimals()
             .build();
@@ -196,7 +197,7 @@ public class CurrencyFormatterTest
     @Test
     public void testSeparators() throws Exception
     {
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .groupDigits()
             .showFully()
             .build();
@@ -206,35 +207,35 @@ public class CurrencyFormatterTest
         assertEquals("123,456,789", cf.toString());
         
         // Set a single space as thousands separator
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .groupDigits(" ")
             .showFully()
             .build();
         assertEquals("123 456 789", cf.toString());
         
         // Default decimal separator '.'
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showDecimals()
             .showHighestThousand()
             .build();
         assertEquals("123.45", cf.toString());
         
         // Custom separator '#'
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showDecimals("#")
             .showHighestThousand()
             .build();
         assertEquals("123#45", cf.toString());
         
         // Show more decimals
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showDecimals(3)
             .showHighestThousand()
             .build();
         assertEquals("123.456", cf.toString());
         
         // Show just one decimal
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showDecimals(1)
             .showHighestThousand()
             .build();
@@ -245,7 +246,7 @@ public class CurrencyFormatterTest
     @Test
     public void testNames()
     {
-        cf = new CurrencyFormatter.Builder(c)
+        cf = new Formatter.ForCurrency(c)
             .showDecimals(2)
             .showHighestThousand()
             .useAbbreviations(new String[]{"K", "M", "B", "T", "aa"})

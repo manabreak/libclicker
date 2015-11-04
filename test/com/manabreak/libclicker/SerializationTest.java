@@ -23,16 +23,12 @@
  */
 package com.manabreak.libclicker;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -93,15 +89,15 @@ public class SerializationTest
         BigInteger goldBeforeSerialization = gold.getValue();
         
         /* SERIALIZATION */
-        ByteOutputStream bos = new ByteOutputStream();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(world);
         
-        byte[] bytes = bos.getBytes();
+        byte[] bytes = bos.toByteArray();
         oos.close();
         
         /* DESERIALIZATION */
-        ByteInputStream bis = new ByteInputStream(bytes, bytes.length);
+        ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ObjectInputStream ois = new ObjectInputStream(bis);
         World newWorld = (World)ois.readObject();
         

@@ -38,13 +38,19 @@ public class AutomatorTest
         World world = new World();
         
         System.out.println("update()");
-        Generator g = new Generator.Builder(world)
+        Currency c = new Currency.Builder(world)
             .build();
+        Generator g = new Generator.Builder(world)
+            .generate(c)
+            .build();
+        g.upgrade();
         
         Automator a = new Automator.Builder(world)
             .automate(g)
             .every(1.0)
             .build();
+        a.upgrade();
+        
         world.update(1.0);
         assertEquals(1, g.getTimesProcessed());
         

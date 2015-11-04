@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2015 Harri Pellikka.
+ * Copyright 2015 Harri.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,25 +23,23 @@
  */
 package com.manabreak.libclicker;
 
-import static junit.framework.Assert.assertEquals;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
  *
- * @author Harri Pellikka
+ * @author Harri
  */
-public class WorldTest
+public class NumberFormatterTest
 {
-    /**
-     * Test of addGenerator method, of class World.
-     */
-    @Test
-    public void testGenerators()
+    
+    public NumberFormatterTest()
     {
-        System.out.println("Add / remove generators");
-        
+    }
+    
+    @Test
+    public void testBigIntegerFormatting()
+    {
         
     }
-
 }

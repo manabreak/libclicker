@@ -24,43 +24,117 @@
 package com.manabreak.libclicker;
 
 /**
- * A formatter for currencies. Formats the information and values of currencies
- * into various formats.
+ * A formatter for BigInteger values.
  *
  * @author Harri Pellikka
  */
-public class CurrencyFormatter
+public class Formatter
 {
-    private final Currency mCurrency;
-    
-    private boolean mGroupDigits;
-    private String mThousandSeparator;
-    private boolean mShowDecimals;
-    private int mDecimals;
-    private String mDecimalSeparator;
-    
-    private boolean mCutAtHighest;
-    
-    private String[] mAbbreviations;
-    
-    public static class Builder
+    /**
+     * Formats a currency to a nice string representation.
+     */
+    public static class CurrencyFormatter extends Formatter
     {
         private final Currency mCurrency;
         
+        private CurrencyFormatter(Builder builder, Currency currency)
+        {
+            super(builder);
+            mCurrency = currency;
+        }
+
+        @Override
+        public String toString()
+        {
+            setRawString(mCurrency.getValue().toString());
+            return super.toString();
+        }
+    }
+    
+    /**
+     * Formats an item's price to a nice string representation.
+     */
+    public static class ItemPriceFormatter extends Formatter
+    {
+        private final Item mItem;
+        
+        private ItemPriceFormatter(Builder builder, Item item)
+        {
+            super(builder);
+            mItem = item;
+        }
+
+        @Override
+        public String toString()
+        {
+            setRawString(mItem.getPrice().toString());
+            return super.toString();
+        }
+    }
+    
+    protected final boolean mGroupDigits;
+    protected final String mThousandSeparator;
+    protected final boolean mShowDecimals;
+    protected final int mDecimals;
+    protected final String mDecimalSeparator;
+    protected final boolean mCutAtHighest;
+    protected final String[] mAbbreviations;
+    
+    protected Formatter(Builder builder)
+    {
+        mGroupDigits = builder.mGroupDigits;
+        mThousandSeparator = builder.mThousandSeparator;
+        mShowDecimals = builder.mShowDecimals;
+        mDecimals = builder.mDecimals;
+        mDecimalSeparator = builder.mDecimalSeparator;
+        mCutAtHighest = builder.mCutAtHighest;
+        mAbbreviations = builder.mAbbreviations;
+    }
+    
+    public static class ForItemPrice extends Builder
+    {
+        private Item mItem;
+        
+        public ForItemPrice(Item item)
+        {
+            mItem = item;
+        }
+        
+        @Override
+        public ItemPriceFormatter build()
+        {
+            return new ItemPriceFormatter(this, mItem);
+        }
+    }
+    
+    public static class ForCurrency extends Builder
+    {
+        private Currency mCurrency;
+        
+        public ForCurrency(Currency c)
+        {
+            mCurrency = c;
+        }
+        
+        public CurrencyFormatter build()
+        {
+            return new CurrencyFormatter(this, mCurrency);
+        }
+    }
+    
+    public static abstract class Builder
+    {   
         private boolean mGroupDigits = true;
         private String mThousandSeparator = ",";
-        
         private boolean mShowDecimals = false;
         private int mDecimals = 2;
         private String mDecimalSeparator;
-        
         private boolean mCutAtHighest = true;
-        
         private String[] mAbbreviations = null;
         
-        public Builder(Currency c)
+        private Builder()
         {
-            mCurrency = c;
+            
         }
         
         public Builder showHighestThousand()
@@ -131,29 +205,23 @@ public class CurrencyFormatter
             return this;
         }
         
-        public CurrencyFormatter build()
-        {
-            CurrencyFormatter cf = new CurrencyFormatter(mCurrency);
-            cf.mCutAtHighest = mCutAtHighest;
-            cf.mShowDecimals = mShowDecimals;
-            cf.mDecimals = mDecimals;
-            cf.mDecimalSeparator = mDecimalSeparator;
-            cf.mGroupDigits = mGroupDigits;
-            cf.mThousandSeparator = mThousandSeparator;
-            cf.mAbbreviations = mAbbreviations;
-            return cf;
-        }
+        public abstract Formatter build();
     }
     
-    private CurrencyFormatter(Currency currency)
+    
+    
+    private String mRawString = "";
+    
+    public void setRawString(String raw)
     {
-        mCurrency = currency;
+        mRawString = raw;
+        if(mRawString == null) mRawString = "";
     }
 
     @Override
     public String toString()
     {
-        String raw = mCurrency.getAmountAsString();
+        String raw = mRawString;
         if(mCutAtHighest)
         {
             int length = raw.length();
