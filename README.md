@@ -177,14 +177,14 @@ possible out outcomes are:
 
 - `PurchaseResult.MAX_LEVEL_REACHED` when the item has already reached its max level and cannot be upgraded any further
 
-### Currency formatters
+### Formatters
 
 You can query the amount of currency by calling its `getAmountAsString()` method, but
 this produces a rather ugly output that may not even fit on the screen.
 Instead, you can create a currency formatter to produce a nice output:
 
 ```java
-CurrencyFormatter printGold = new CurrencyFormatter.Builder(gold)
+Formatter printGold = new Formatter.ForCurrency(gold)
       .groupDigits() // Group digits into groups of three
       .showHighestThousand() // Show only the highest triplet in the amount
       .showDecimals(2) // Show two decimals if "truncating" lower numbers
@@ -204,7 +204,7 @@ You usually want to use some indicators about the multitude of the currency (K f
 M for millions etc.). You can do this by supplying an array of "names" for each "thousand":
 
 ```java
-CurrencyFormatter printGold = new CurrencyFormatter.Builder(gold)
+Formatter printGold = new Formatter.ForCurrency(gold)
       .groupDigits()
       .showHighestThousand()
       .showDecimals(2)
@@ -223,3 +223,10 @@ Gold now: 123.45M
 If the amount of currency is higher than the amount of abbreviations supplied,
 the abbreviation will be omitted. Similarly, if the amount is less than 1,000,
 no abbreviation will be added.
+
+You can also format other things, e.g. the price of an item:
+
+```java
+Formatter printItemPrice = new Formatter.ForItemPrice(item)
+      .build();
+```
