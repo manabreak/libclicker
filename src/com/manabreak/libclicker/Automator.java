@@ -28,7 +28,7 @@ import java.math.BigInteger;
 
 /**
  * Automator class for automating generators.
- * 
+ *
  * Normally generators are manually controlled, i.e. they generate resources
  * when explicitly told to. Automators are used to trigger generators
  * during the world's update cycles.
@@ -43,7 +43,7 @@ public class Automator extends Item implements Serializable
     private double mMultiplier;
     private boolean mEnabled;
     private double mActualTickRate;
-    
+
     public static class Builder
     {
         private final World mWorld;
@@ -54,7 +54,8 @@ public class Automator extends Item implements Serializable
         private BigInteger mBasePrice = BigInteger.ONE;
         private double mPriceMultiplier = 1.1;
         private double mTickRateMultiplier = 1.08;
-        
+        private long mMaxLevel = Long.MAX_VALUE;
+
         /**
          * Constructs a new automator builder
          * @param world World the automator belongs to
@@ -63,7 +64,7 @@ public class Automator extends Item implements Serializable
         {
             mWorld = world;
         }
-        
+
         /**
          * Constructs a new automator builder for the given generator
          * @param world World the automator belongs to
@@ -74,40 +75,40 @@ public class Automator extends Item implements Serializable
             mWorld = world;
             mGenerator = generator;
         }
-        
+
         public Builder basePrice(int price)
         {
             mBasePrice = new BigInteger("" + price);
             return this;
         }
-        
+
         public Builder basePrice(long price)
         {
             mBasePrice = new BigInteger("" + price);
             return this;
         }
-        
+
         public Builder basePrice(BigInteger price)
         {
             mBasePrice = price;
             return this;
         }
-        
+
         public Builder priceMultiplier(double multiplier)
         {
             mPriceMultiplier = multiplier;
             return this;
         }
-        
+
         public Builder tickRateMultiplier(double multiplier)
         {
             mTickRateMultiplier = multiplier;
             return this;
         }
-        
+
         /**
          * Sets the target generator this automator should automate.
-         * 
+         *
          * @param generator Generator to automate
          * @return This builder for chaining
          */
@@ -116,10 +117,10 @@ public class Automator extends Item implements Serializable
             mGenerator = generator;
             return this;
         }
-        
+
         /**
          * Sets the name for this automator.
-         * 
+         *
          * @param name Name
          * @return This builder for chaining
          */
@@ -128,11 +129,11 @@ public class Automator extends Item implements Serializable
             mName = name;
             return this;
         }
-        
+
         /**
          * Sets the tick rate of this automator, i.e. how often
          * this automator should do its business.
-         * 
+         *
          * @param seconds Tick rate in seconds
          * @return This builder for chaining
          */
@@ -141,7 +142,7 @@ public class Automator extends Item implements Serializable
             mTickRate = seconds;
             return this;
         }
-        
+
         /**
          * Constructs the automator based on the given properties.
          * @return The automator
@@ -149,24 +150,39 @@ public class Automator extends Item implements Serializable
         public Automator build()
         {
             if(mGenerator == null) throw new IllegalStateException("Generator cannot be null");
-            
+
             Automator a = new Automator(mWorld, mName);
             a.mGenerator = mGenerator;
             a.mTickRate = mTickRate;
             a.mEnabled = mEnabled;
+            a.mMaxItemLevel = mMaxLevel;
             a.mBasePrice = mBasePrice;
             a.mPriceMultiplier = mPriceMultiplier;
             a.mMultiplier = mTickRateMultiplier;
             mWorld.addAutomator(a);
             return a;
         }
+
+        /**
+         * Sets the maximum allowed level for this Automator. The max level must
+         * be greated than zero.
+         * @param maxLevel Maximum allowed level for this generator
+         * @return This builder for chaining
+         */
+        public Automator.Builder maxLevel(long maxLevel)
+        {
+            if(maxLevel <= 0) throw new IllegalArgumentException("Max level must be greater than 0");
+            mMaxLevel = maxLevel;
+            return this;
+        }
+
     }
-    
+
     private Automator(World world, String name)
     {
         super(world, name);
     }
-    
+
     /**
      * Enables this automator. Automators are enabled by default when
      * they are created.
@@ -179,7 +195,7 @@ public class Automator extends Item implements Serializable
             mEnabled = true;
         }
     }
-    
+
     /**
      * Disables this automator, effectively turning the automation off.
      */
@@ -195,11 +211,15 @@ public class Automator extends Item implements Serializable
     @Override
     public void upgrade()
     {
-        super.upgrade(); //To change body of generated methods, choose Tools | Templates.
-        mActualTickRate = getFinalTickRate();
-        System.out.println("Upgraded, final tick rate now: " + mActualTickRate);
+        if(mItemLevel < mMaxItemLevel) {
+            super.upgrade(); //To change body of generated methods, choose Tools | Templates.
+            mActualTickRate = getFinalTickRate();
+            System.out.println("Upgraded, final tick rate now: " + mActualTickRate);
+        }else {
+            System.out.println("Max level is reached:" + mMaxItemLevel);
+        }
     }
-    
+
     private double getFinalTickRate()
     {
         if(mItemLevel == 0) return 0.0;
@@ -207,11 +227,11 @@ public class Automator extends Item implements Serializable
         double m = Math.pow(mMultiplier, mItemLevel - 1);
         return r / m;
     }
-    
+
     void update(double delta)
     {
         if(!mEnabled || mItemLevel == 0) return;
-        
+
         mTickTimer += delta;
         while(mTickTimer >= mActualTickRate)
         {
@@ -219,7 +239,7 @@ public class Automator extends Item implements Serializable
             mGenerator.process();
         }
     }
-    
+
     /**
      * Retrieves the tick rate of this automator.
      * @return Tick rate in seconds
@@ -228,10 +248,10 @@ public class Automator extends Item implements Serializable
     {
         return mTickRate;
     }
-    
+
     /**
      * Sets the tick rate of this automator.
-     * 
+     *
      * @param tickRate Tick rate in seconds
      */
     public void setTickRate(double tickRate)
@@ -239,15 +259,19 @@ public class Automator extends Item implements Serializable
         mTickRate = tickRate;
         if(mTickRate < 0.0) mTickRate = 0.0;
     }
-    
+
     /**
      * Retrieves the percentage of the tick. Useful
      * when creating progress bars for generators.
-     * 
+     *
      * @return Percentage of tick completion
      */
     public double getTimerPercentage()
     {
         return mTickRate != 0.0 ? mTickTimer / mTickRate : 1.0;
     }
+
+
+
+
 }
